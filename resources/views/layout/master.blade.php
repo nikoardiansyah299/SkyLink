@@ -48,7 +48,12 @@
               <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" href="/edit-password">Edit Password</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                <li>
+                  <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                    @csrf
+                    <button type="submit" class="dropdown-item" style="background:none; border:none; cursor:pointer;">Logout</button>
+                  </form>
+                </li>
               </ul>
             </li>
           @else

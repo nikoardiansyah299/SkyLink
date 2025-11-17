@@ -19,7 +19,17 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test@travelid.com',
+            'username' => 'testuser',
+            'password' => \Illuminate\Support\Facades\Hash::make('password123'),
+        ]);
+
+        // Additional test user
+        User::create([
+            'name' => 'Admin User',
+            'email' => 'admin@travelid.com',
+            'username' => 'admin',
+            'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
         ]);
     }
 }
