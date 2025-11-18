@@ -13,6 +13,14 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * Indicates if the model should be timestamped.
+     * We only use created_at, not updated_at
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -22,6 +30,8 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'oauth_provider',
+        'oauth_id',
     ];
 
     /**
@@ -32,6 +42,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'oauth_id',
     ];
 
     /**

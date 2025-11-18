@@ -101,10 +101,10 @@
       </div>
       <div class="col-md-4">
         <div class="card h-100">
-          <img src="https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxyn1UgFn9RW4GBYoiu-LD9JGsTPXCjZZyGY1TleBqFKNVWPxWS57og_0ESOs6yv7dq1hnwKjxW1It0piRGfR9-xHRmHqt182CkdOkK7zFlxWa92apqVlQX53SDrHAQoh0TO84=s680-w680-h510-rw" class="card-img-top" alt="Machu Picchu" loading="lazy">
+          <img src="https://www.agoda.com/wp-content/uploads/2019/03/Paris-airport-Paris-Eiffel-Tower.jpg" class="card-img-top" alt="Machu Picchu">
           <div class="card-body">
-            <h5 class="card-title">Machu Picchu, Peru</h5>
-            <p class="card-text text-muted">Trek through ancient Incan ruins and witness spectacular sites.</p>
+            <h5 class="card-title">Paris, France</h5>
+            <p class="card-text text-muted">Nikmati pemandangan di atas Eiffel Tower dan nikmati kuliner di berbagai restoran khas Perancis.</p>
           </div>
           <div class="card-footer bg-white border-0">
             <a href="#" class="btn btn-primary btn-sm">Explore</a>
