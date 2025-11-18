@@ -22,7 +22,7 @@
             <h5 class="card-title">Cari Penerbangan</h5>
             <form class="row g-2" action="#" method="post">
               <div class="col-12">
-                <input type="text" name="destination" class="form-control" placeholder="Destination" required>
+                <input type="text" name="destination" class="form-control" placeholder="Destinasi" required>
                 <body class="card-title">Tanggal berangkat</b>
 
               </div>
