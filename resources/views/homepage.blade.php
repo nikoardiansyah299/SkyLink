@@ -19,16 +19,20 @@
       <div class="col-lg-6 mt-4 mt-lg-0">
         <div class="card shadow-sm">
           <div class="card-body">
-            <h5 class="card-title">Search Tours</h5>
+            <h5 class="card-title">Cari Penerbangan</h5>
             <form class="row g-2" action="#" method="post">
               <div class="col-12">
                 <input type="text" name="destination" class="form-control" placeholder="Destination" required>
+                <body class="card-title">Tanggal berangkat</b>
+
               </div>
               <div class="col-md-6">
                 <input type="date" name="checkin" class="form-control" required>
+                <body class="card-title">Penumpang Dewasa</b>
               </div>
               <div class="col-md-6">
                 <input type="date" name="checkout" class="form-control" required>
+                <body class="card-title">Anak-anak</b>
               </div>
               <div class="col-md-6">
                 <input type="number" name="adults" class="form-control" min="1" value="2" required>
@@ -37,7 +41,7 @@
                 <input type="number" name="children" class="form-control" min="0" value="0">
               </div>
               <div class="col-12">
-                <button class="btn btn-primary w-100">Search Tours</button>
+                <button class="btn btn-primary w-100">Cari</button>
               </div>
             </form>
           </div>
@@ -115,32 +119,154 @@
   </div>
 </section>
 
-<!-- Featured Tours (simple grid) -->
+<!-- Services Highlight with Tabs -->
 <section class="py-5">
   <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="h4 mb-0">Featured Tours</h2>
-      <a href="#" class="btn btn-sm btn-outline-primary">See All Tours</a>
+    <div class="text-center mb-5">
+      <h2 class="h3 fw-bold">Explore Our Product and Services</h2>
     </div>
-    <div class="row g-4">
-      @foreach (range(1,4) as $i)
-      <div class="col-lg-3 col-md-6">
-        <div class="card h-100 shadow-sm">
-          <img src="https://source.unsplash.com/600x400/?tour,travel,landscape,{{$i}}" class="card-img-top" alt="Tour {{$i}}" loading="lazy">
-          <div class="card-body">
-            <h5 class="card-title">Sample Tour {{$i}}</h5>
-            <p class="card-text text-muted">Short description of the tour highlighting attractions and duration.</p>
-          </div>
-          <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
-            <a href="#" class="btn btn-primary btn-sm">Explore Tour</a>
-            <small class="text-muted">4.8</small>
+    
+    <!-- Tab Navigation -->
+    <div class="d-flex gap-2 mb-4 justify-content-center flex-wrap">
+      <button class="service-tab btn btn-outline-primary rounded-pill px-4 py-2 active" data-service="meals">
+        Meals
+      </button>
+      <button class="service-tab btn btn-outline-primary rounded-pill px-4 py-2" data-service="baggage">
+        Baggage
+      </button>
+      <button class="service-tab btn btn-outline-primary rounded-pill px-4 py-2" data-service="seat">
+        Seat
+      </button>
+    </div>
+
+    <!-- Service Content -->
+    <div class="service-content">
+      <!-- Meals Tab -->
+      <div class="service-item active" id="meals" data-service="meals">
+        <div class="card border-0 shadow-sm">
+          <div class="row g-0 align-items-center">
+            <div class="col-md-5">
+              <img src="https://www.foodandwine.com/thmb/eOZthCo0FebSOODOCRQYSQHChzc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/The-Best-Foods-to-Order-on-a-Flight-According-to-Chefs-FT-BLOG1222-4c93bdb4cdaa4c469a75753f3b5ae00c.jpg" 
+                   alt="Meals" class="img-fluid rounded-start" loading="lazy" style="height: 300px; object-fit: cover;">
+            </div>
+            <div class="col-md-7">
+              <div class="card-body p-4">
+                <h5 class="card-title fw-bold">Culinary Experiences & In-Flight Dining</h5>
+                <p class="card-text text-muted mb-3">
+                  On most long-haul flights, a complimentary hot meal service is included, with options that often feature a choice of international or local cuisine.
+                </p>
+                <p class="card-text text-muted">
+                  For shorter trips, a selection of premium snacks and beverages is available.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      @endforeach
+
+      <!-- Baggage Tab -->
+      <div class="service-item" id="baggage" data-service="baggage">
+        <div class="card border-0 shadow-sm">
+          <div class="row g-0 align-items-center">
+            <div class="col-md-5">
+              <img src="https://autourasia.com/uploads/Travel-Guide-Thailand/thailand-useful-information/airline-baggage-in-thailand/700-bagage-a-main.jpg" 
+                   alt="Baggage" class="img-fluid rounded-start" loading="lazy" style="height: 300px; object-fit: cover;">
+            </div>
+            <div class="col-md-7">
+              <div class="card-body p-4">
+                <h5 class="card-title fw-bold">Premium Baggage Services</h5>
+                <p class="card-text text-muted mb-3">
+                  Travel with confidence with our generous baggage allowances. Check in your luggage worry-free with our reliable handling system.
+                </p>
+                <p class="card-text text-muted">
+                  Priority baggage handling ensures your bags arrive safely and on time at your destination.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seat Tab -->
+      <div class="service-item" id="seat" data-service="seat">
+        <div class="card border-0 shadow-sm">
+          <div class="row g-0 align-items-center">
+            <div class="col-md-5">
+              <img src="https://media.cnn.com/api/v1/images/stellar/prod/171114182232-airline-seats-empty-stock.jpg?q=w_1110,c_fill" 
+                   alt="Seat" class="img-fluid rounded-start" loading="lazy" style="height: 300px; object-fit: cover;">
+            </div>
+            <div class="col-md-7">
+              <div class="card-body p-4">
+                <h5 class="card-title fw-bold">Comfortable Seating Options</h5>
+                <p class="card-text text-muted mb-3">
+                  Choose from various seat options including economy, premium economy, and business class with enhanced comfort and amenities.
+                </p>
+                <p class="card-text text-muted">
+                  Enjoy extra legroom, wider seats, and premium bedding on long-haul flights for maximum comfort during your journey.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  .service-tab {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+  }
+
+  .service-tab:hover {
+    background-color: #0d6efd !important;
+    color: white !important;
+    transform: translateY(-2px);
+  }
+
+  .service-tab.active {
+    background-color: #0d6efd !important;
+    color: white !important;
+  }
+
+  .service-item {
+    display: none;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .service-item.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll('.service-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      const service = this.getAttribute('data-service');
+      
+      // Remove active class from all tabs and items
+      document.querySelectorAll('.service-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.service-item').forEach(item => item.classList.remove('active'));
+      
+      // Add active class to clicked tab and corresponding item
+      this.classList.add('active');
+      document.getElementById(service).classList.add('active');
+    });
+  });
+</script>
 
 <!-- Testimonials -->
 <section class="py-5 bg-light">

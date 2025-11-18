@@ -27,7 +27,7 @@
   <!--  Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container">
-      <a class="navbar-brand fw-bold text-light" href="/">🌍 TravelID</a>
+      <a class="navbar-brand fw-bold text-light" href="/">🌍 SkyLink</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -75,7 +75,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-4 mb-3">
-          <h5 class="fw-bold">🌍 TravelID</h5>
+          <h5 class="fw-bold">🌍 SkyLink</h5>
           <p class="text-muted small">Your trusted travel ticket booking platform</p>
         </div>
         <div class="col-md-4 mb-3">
@@ -100,12 +100,5 @@
       </div>
     </div>
   </footer>
-
-  <!--  Bootstrap JS -->
-  <script 
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
-    integrity="sha384-C6RzsynM9uj1KfSCX4mesJQAA4Rq7RE4yQn4gRsbQJ8Ai6RDTQ3urIsrgFOIkTrH" 
-    crossorigin="anonymous">
-  </script>
 </body>
 </html>
