@@ -5,15 +5,17 @@
 @section('content')
 
 <!-- Hero -->
-<section class="py-5 bg-primary text-light">
-  <div class="container">
+<section class="py-5 text-light position-relative">
+  <div class="hero-bg" aria-hidden="true"></div>
+
+  <div class="container position-relative" style="z-index:2;">
     <div class="row align-items-center">
       <div class="col-lg-6">
         <h1 class="display-5 fw-bold">Discover the World with Us</h1>
-        <p class="lead">Explore breathtaking destinations and create unforgettable memories with our expertly crafted tours.</p>
+        <p class="lead">Explore breathtaking destinations and create unforgettable memories with our service.</p>
         <p>
           <a href="{{ url('/travels') }}" class="btn btn-light btn-lg me-2">Start Exploring</a>
-          <a href="{{ url('/tours') }}" class="btn btn-outline-light btn-lg">View Tours</a>
+          <a href="{{ url('/booking') }}" class="btn btn-outline-light btn-lg">View Booking</a>
         </p>
       </div>
       <div class="col-lg-6 mt-4 mt-lg-0">
@@ -23,16 +25,15 @@
             <form class="row g-2" action="#" method="post">
               <div class="col-12">
                 <input type="text" name="destination" class="form-control" placeholder="Destinasi" required>
-                <body class="card-title">Tanggal berangkat</b>
-
+                <div class="small text-muted mt-1">Tanggal berangkat</div>
               </div>
               <div class="col-md-6">
                 <input type="date" name="checkin" class="form-control" required>
-                <body class="card-title">Penumpang Dewasa</b>
+                <div class="small text-muted mt-1">Penumpang Dewasa</div>
               </div>
               <div class="col-md-6">
                 <input type="date" name="checkout" class="form-control" required>
-                <body class="card-title">Anak-anak</b>
+                <div class="small text-muted mt-1">Anak-anak</div>
               </div>
               <div class="col-md-6">
                 <input type="number" name="adults" class="form-control" min="1" value="2" required>
@@ -49,6 +50,24 @@
       </div>
     </div>
   </div>
+  <style>
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(rgba(13,110,253,0.28), rgba(13,110,253,0.28)),
+                  url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover no-repeat;
+      z-index: 1;
+      filter: saturate(0.95) brightness(0.95);
+    }
+
+    .hero-bg + .container .card {
+      background-color: rgba(255,255,255,0.96);
+    }
+
+    @media (max-width: 767px) {
+      .hero-bg { background-position: center top; }
+    }
+  </style>
 </section>
 
 <!-- About / Why Us -->
@@ -141,7 +160,7 @@
 
     <!-- Service Content -->
     <div class="service-content">
-      <!-- Meals Tab -->
+
       <div class="service-item active" id="meals" data-service="meals">
         <div class="card border-0 shadow-sm">
           <div class="row g-0 align-items-center">
@@ -164,7 +183,6 @@
         </div>
       </div>
 
-      <!-- Baggage Tab -->
       <div class="service-item" id="baggage" data-service="baggage">
         <div class="card border-0 shadow-sm">
           <div class="row g-0 align-items-center">
@@ -187,7 +205,6 @@
         </div>
       </div>
 
-      <!-- Seat Tab -->
       <div class="service-item" id="seat" data-service="seat">
         <div class="card border-0 shadow-sm">
           <div class="row g-0 align-items-center">
