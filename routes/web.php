@@ -22,9 +22,6 @@ Route::middleware('guest')->group(function () {
     Route::get('/auth/google/callback', [GoogleOAuthController::class, 'callback'])->name('google.callback');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-});
 // PROTECTED ROUTES (USER LOGIN)
 Route::middleware('auth')->group(function () {
 
