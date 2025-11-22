@@ -124,7 +124,7 @@
       </div>
       <div class="col-md-4">
         <div class="card h-100">
-          <img src="https://www.agoda.com/wp-content/uploads/2019/03/Paris-airport-Paris-Eiffel-Tower.jpg" class="card-img-top" alt="Machu Picchu">
+          <img src="https://www.agoda.com/wp-content/uploads/2019/03/Paris-airport-Paris-Eiffel-Tower.jpg" class="card-img-top" alt="Paris">
           <div class="card-body">
             <h5 class="card-title">Paris, France</h5>
             <p class="card-text text-muted">Nikmati pemandangan di atas Eiffel Tower dan nikmati kuliner di berbagai restoran khas Perancis.</p>
@@ -134,6 +134,41 @@
           </div>
         </div>
       </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <img src="https://cdn.tripster.com/travelguide/wp-content/uploads/2022/11/oahu-hawaii-usa-hanauma-bay-aerial-view-blue-ocean.jpeg" class="card-img-top" alt="Hawaii" loading="lazy">
+          <div class="card-body">
+            <h5 class="card-title">Hawaii, USA</h5>
+            <p class="card-text text-muted">Experience breathtaking sunsets and pristine villages.</p>
+          </div>
+          <div class="card-footer bg-white border-0">
+            <a href="#" class="btn btn-primary btn-sm">Explore</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <img src="https://a.travel-assets.com/findyours-php/viewfinder/images/res70/474000/474916-Sydney-Opera-House.jpg" class="card-img-top" alt="Sydney" loading="lazy">
+          <div class="card-body">
+            <h5 class="card-title">Sydney, Australia</h5>
+            <p class="card-text text-muted">Experience the iconic Sydney Opera House and stunning harbor views.</p>
+          </div>
+          <div class="card-footer bg-white border-0">
+            <a href="#" class="btn btn-primary btn-sm">Explore</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <img src="https://www.gotokyo.org/en/destinations/western-tokyo/shibuya/images/main.jpg" class="card-img-top" alt="Tokyo" loading="lazy">
+          <div class="card-body">
+            <h5 class="card-title">Tokyo, Japan</h5>
+            <p class="card-text text-muted">Discover the perfect blend of tradition and modernity in Japan's capital.</p>
+          </div>
+          <div class="card-footer bg-white border-0">
+            <a href="#" class="btn btn-primary btn-sm">Explore</a>
+          </div>
+        </div>
     </div>
   </div>
 </section>
