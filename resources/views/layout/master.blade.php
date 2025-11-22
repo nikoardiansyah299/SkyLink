@@ -84,10 +84,10 @@
               </a>
               
               <!-- X (Twitter) -->
-              <a href="#" class="d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width:40px;height:40px;background:#33C7FF;color:#fff;">
-                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/twitter.svg" width="18" height="18" alt="X" style="filter: brightness(0) invert(1);">
+              <a href="#" class="d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width:40px;height:40px;background:#000000;color:#fff;">
+                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/x.svg" width="18" height="18" alt="X" style="filter: brightness(0) invert(1);">
               </a>
-              
+            
               <!-- Facebook -->
               <a href="#" class="d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width:40px;height:40px;background:#1877F2;color:#fff;">
                 <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/facebook.svg" width="18" height="18" alt="Facebook" style="filter: brightness(0) invert(1);">
