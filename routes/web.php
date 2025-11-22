@@ -28,11 +28,16 @@ Route::middleware('auth')->group(function () {
 // PROTECTED ROUTES (USER LOGIN)
 Route::middleware('auth')->group(function () {
 
+    // logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    // profile page
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 
+    // update username + email
     Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
 
+    // update password
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
 });
