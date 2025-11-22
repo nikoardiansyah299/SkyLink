@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GoogleOAuthController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return view('homepage');
@@ -21,6 +22,19 @@ Route::middleware('guest')->group(function () {
     Route::get('/auth/google/callback', [GoogleOAuthController::class, 'callback'])->name('google.callback');
 });
 
+// PROTECTED ROUTES (USER LOGIN)
 Route::middleware('auth')->group(function () {
+
+    // logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // profile page
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+
+    // update username + email
+    Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
+
+    // update password
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
 });
