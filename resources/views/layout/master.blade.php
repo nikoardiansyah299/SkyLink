@@ -8,6 +8,7 @@
   <!--  Bootstrap CSS -->
   <link 
     href="{{ asset('/css/bootstrap.min.css')}}" rel="stylesheet">
+
   <style>
     body {
       display: flex;
@@ -70,35 +71,66 @@
     @yield('content')
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-dark text-light py-4 mt-5">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4 mb-3">
-          <h5 class="fw-bold">🌍 SkyLink</h5>
-          <p class="text-muted small">Your trusted travel ticket booking platform</p>
+<!-- footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+      <div class="container">
+        <div class="row align-items-start">
+          <div class="col-md-3 mb-3">
+            <div class="small text-muted mb-2">Follow us on:</div>
+            <div class="d-flex align-items-center gap-2">
+              <!-- YouTube -->
+              <a href="#" class="d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width:40px;height:40px;background:#FF5252;color:#fff;">
+                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/youtube.svg" width="18" height="18" alt="YouTube" style="filter: brightness(0) invert(1);">
+              </a>
+              
+              <!-- X (Twitter) -->
+              <a href="#" class="d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width:40px;height:40px;background:#33C7FF;color:#fff;">
+                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/twitter.svg" width="18" height="18" alt="X" style="filter: brightness(0) invert(1);">
+              </a>
+              
+              <!-- Facebook -->
+              <a href="#" class="d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width:40px;height:40px;background:#1877F2;color:#fff;">
+                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/facebook.svg" width="18" height="18" alt="Facebook" style="filter: brightness(0) invert(1);">
+              </a>
+              
+              <!-- Instagram -->
+              <a href="#" class="d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width:40px;height:40px;background:#FFC107;color:#fff;">
+                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/instagram.svg" width="18" height="18" alt="Instagram" style="filter: brightness(0) invert(1);">
+              </a>
+            </div>
+          </div>
+          
+          <div class="col-md-3 mb-3 text-center">
+            <h6 class="fw-bold">Discover</h6>
+            <ul class="list-unstyled small">
+              <li><a href="/" class="text-light text-decoration-none">Home</a></li>
+              <li><a href="/booking" class="text-light text-decoration-none">My Booking</a></li>
+              <li><a href="/travel" class="text-light text-decoration-none">Destination</a></li>
+            </ul>
+          </div>
+          
+          <div class="col-md-3 mb-3 text-center">
+            <h6 class="fw-bold">Quick Links</h6>
+            <ul class="list-unstyled small">
+              <li><a href="/login" class="text-light text-decoration-none">Login</a></li>
+              <li><a href="/register" class="text-light text-decoration-none">Register</a></li>
+              <li><a href="/travels" class="text-light text-decoration-none">Available Travels</a></li>
+            </ul>
+          </div>
+          
+          <div class="col-md-3 mb-3 text-center">
+            <h6 class="fw-bold">Contact</h6>
+            <p class="text-muted small mb-1"><span class="text-light">Address : Lorem</span></p>
+            <p class="text-muted small mb-1"><span class="text-light">Email : xyz@mail.com</span></p>
+            <p class="text-muted small mb-0"><span class="text-light">Phone : 00022200222</span></p>
+          </div>
         </div>
-        <div class="col-md-4 mb-3">
-          <h6 class="fw-bold">Quick Links</h6>
-          <ul class="list-unstyled small">
-            <li><a href="/" class="text-muted text-decoration-none">Home</a></li>
-            <li><a href="/travels" class="text-muted text-decoration-none">Available Travels</a></li>
-            <li><a href="/bookings" class="text-muted text-decoration-none">My Bookings</a></li>
-          </ul>
-        </div>
-        <div class="col-md-4 mb-3">
-          <h6 class="fw-bold">Contact</h6>
-          <p class="text-muted small">
-            Email: support@travelid.com<br>
-            Phone: +1-800-TRAVEL-ID
-          </p>
+        
+        <hr class="bg-secondary">
+        <div class="text-center text-light medium">
+          <p>&copy; 2025 SkyLink. All rights reserved.</p>
         </div>
       </div>
-      <hr class="bg-secondary">
-      <div class="text-center text-muted small">
-        <p>&copy; 2025 TravelID. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
-</body>
+    </footer>
+  </body>
 </html>

@@ -296,8 +296,8 @@
       <div class="col-md-4">
         <div class="card p-3">
           <p class="mb-2">"Amazing experience! Highly recommend."</p>
-          <div class="fw-bold">Saul Goodman</div>
-          <small class="text-muted">CEO &amp; Founder</small>
+          <div class="fw-bold">Saul Hudson</div>
+          <small class="text-muted">Influencer</small>
         </div>
       </div>
       <div class="col-md-4">
@@ -318,7 +318,6 @@
   </div>
 </section>
 
-<!-- Call to Action -->
 <section class="py-5 text-center">
   <div class="container">
     <h3 class="mb-3">Ready to Start Your Next Adventure?</h3>
