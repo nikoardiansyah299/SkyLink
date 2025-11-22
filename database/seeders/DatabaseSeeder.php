@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@travelid.com',
             'username' => 'testuser',
+            'roles' => 'client',
             'password' => \Illuminate\Support\Facades\Hash::make('password123'),
         ]);
 
@@ -29,6 +30,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@travelid.com',
             'username' => 'admin',
+            'roles' => 'admin',
             'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
         ]);
     }

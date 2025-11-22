@@ -32,6 +32,7 @@ class User extends Authenticatable
         'password',
         'oauth_provider',
         'oauth_id',
+        'roles',
     ];
 
     /**
