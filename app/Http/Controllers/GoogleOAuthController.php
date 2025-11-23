@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class GoogleOAuthController extends Controller
@@ -90,10 +90,8 @@ class GoogleOAuthController extends Controller
                 }
             }
 
-            // Create session for user
-            Session::put('user_id', $user->id);
-            Session::put('username', $user->username);
-            Session::put('name', $user->name);
+            // Log in user with Laravel Auth
+            Auth::login($user, remember: true);
 
             return redirect('/')->with('success', 'Login berhasil dengan Google! Selamat datang, ' . $user->name . '.');
         } catch (\Exception $e) {
