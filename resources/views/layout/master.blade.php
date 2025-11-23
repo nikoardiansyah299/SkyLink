@@ -25,45 +25,65 @@
 
 <body>
   <!--  Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container">
-      <a class="navbar-brand fw-bold text-light" href="/">🌍 SkyLink</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+        <a class="navbar-brand fw-bold text-light" href="/">🌍 SkyLink</a>
 
-      <div class="collapse navbar-collapse" id="navmenu">
-        <ul class="navbar-nav ms-auto">
-          @if(isset($user) || session('user_id'))
-            <li class="nav-item"><a class="nav-link text-light" href="/">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link text-light" href="/travels">Travels</a></li>
-            <li class="nav-item"><a class="nav-link text-light" href="/bookings">My Bookings</a></li>
-            @if(isset($isAdmin) || session('is_admin'))
-              <li class="nav-item"><a class="nav-link text-light" href="/travel/create">Manage Travels</a></li>
-            @endif
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle text-light" href="#" id="userMenu" role="button" data-bs-toggle="dropdown">
-                {{ session('username', 'User') }}
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="/edit-password">Edit Password</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                  <form method="POST" action="{{ route('logout') }}" style="display:inline;">
-                    @csrf
-                    <button type="submit" class="dropdown-item" style="background:none; border:none; cursor:pointer;">Logout</button>
-                  </form>
-                </li>
-              </ul>
-            </li>
-          @else
-            <li class="nav-item"><a class="nav-link text-light" href="/login">Login</a></li>
-            <li class="nav-item"><a class="nav-link text-light" href="/register">Register</a></li>
-          @endif
-        </ul>
-      </div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navmenu">
+            <ul class="navbar-nav ms-auto">
+
+                @if(Auth::check())
+                    {{-- User Logged In --}}
+                    <li class="nav-item"><a class="nav-link text-light" href="/">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link text-light" href="/travels">Travels</a></li>
+                    <li class="nav-item"><a class="nav-link text-light" href="/bookings">My Bookings</a></li>
+
+                    @if(Auth::user()->is_admin)
+                        <li class="nav-item"><a class="nav-link text-light" href="/travel/create">Manage Travels</a></li>
+                    @endif
+
+                    {{-- Dropdown User --}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="userMenu" role="button" data-bs-toggle="dropdown">
+                            {{ Auth::user()->username }}
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/edit-password">Edit Password</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button class="dropdown-item">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+
+                @else
+                    {{-- Guest / Belum Login --}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="guestMenu" role="button" data-bs-toggle="dropdown">
+                            Account
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/login">Login</a></li>
+                            <li><a class="dropdown-item" href="/register">Register</a></li>
+                        </ul>
+                    </li>
+                @endif
+
+            </ul>
+        </div>
     </div>
-  </nav>
+</nav>
+
+
 
   <!-- Main Content -->
   <main>
@@ -100,5 +120,6 @@
       </div>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

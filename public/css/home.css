@@ -1,0 +1,44 @@
+body {
+    background: #eef7ff;
+    font-family: "Poppins", sans-serif;
+}
+
+/* HERO */
+.hero-section {
+    background: linear-gradient(135deg, #308afc, #308afc);
+    padding: 80px 0;
+    min-height: 70vh;
+}
+
+.hero-text {
+    animation: fadeInUp 1s ease-out;
+}
+
+/* PLANE IMAGE ANIM */
+.plane-img {
+    width: 100%;
+    max-width: 500px;
+    animation: floatPlane 3.5s ease-in-out infinite;
+}
+
+@keyframes floatPlane {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+}
+
+/* SEARCH SECTION */
+.search-box-wrapper {
+    margin-top: -70px;
+    margin-bottom: 60px;
+}
+
+.search-box {
+    border-radius: 25px;
+    animation: fadeIn 1.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GoogleOAuthController;
+use App\Http\Controllers\TravelsController;
 
 Route::get('/', function () {
     return view('homepage');
@@ -24,3 +25,5 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
+
+Route::get('/travels', [TravelsController::class, 'index']);
