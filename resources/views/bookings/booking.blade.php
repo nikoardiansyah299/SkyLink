@@ -42,15 +42,6 @@
     </div>
     @else
 
-    <!-- FILTER TABS -->
-    <div class="d-flex gap-2 mb-4 border-bottom pb-2 flex-wrap">
-        <button class="btn btn-light border rounded-pill px-4 active filter-btn" data-status="all">All Bookings</button>
-        <button class="btn btn-light border rounded-pill px-4 filter-btn" data-status="confirmed">Confirmed</button>
-        <button class="btn btn-light border rounded-pill px-4 filter-btn" data-status="pending">Pending</button>
-        <button class="btn btn-light border rounded-pill px-4 filter-btn" data-status="completed">Completed</button>
-        <button class="btn btn-light border rounded-pill px-4 filter-btn" data-status="cancelled">Cancelled</button>
-    </div>
-
     <!-- BOOKINGS LIST -->
     <div class="row g-4">
         @foreach ($bookings as $booking)

@@ -11,11 +11,11 @@
   <div class="container position-relative" style="z-index:2;">
     <div class="row align-items-center">
       <div class="col-lg-6">
-        <h1 class="display-5 fw-bold">Discover the World with Us</h1>
-        <p class="lead">Explore breathtaking destinations and create unforgettable memories with our service.</p>
+        <h1 class="display-5 fw-bold">Jelajahi Dunia Dengan Layanan Kami</h1>
+        <p class="lead">Temukan destinasi memukau dan ciptakan kenangan tak terlupakan melalui layanan kami.</p>
         <p>
-          <a href="{{ url('/travels') }}" class="btn btn-light btn-lg me-2">Start Exploring</a>
-          <a href="{{ url('/booking') }}" class="btn btn-outline-light btn-lg">View Booking</a>
+          <a href="{{ url('/travels') }}" class="btn btn-light btn-lg me-2">Mulai Jelajah</a>
+          <a href="{{ url('/booking') }}" class="btn btn-outline-light btn-lg">Lihat Booking</a>
         </p>
       </div>
       <div class="col-lg-6 mt-4 mt-lg-0">
@@ -75,12 +75,15 @@
   <div class="container">
     <div class="row g-4 align-items-center">
       <div class="col-md-6">
-        <h3>Creating Unforgettable Travel Experiences</h3>
-        <p class="text-muted">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+        <h3>Menciptakan Pengalaman Perjalanan Tak Terlupakan</h3>
+        <p class="text-muted">
+          Kami hadir untuk memberikan pengalaman perjalanan terbaik dengan pelayanan profesional, 
+          destinasi pilihan, dan kenyamanan maksimal bagi setiap pelanggan.
+        </p>
         <ul class="list-unstyled">
-          <li class="mb-2">• Expert local guides in every destination</li>
-          <li class="mb-2">• Customized itineraries for every traveler</li>
-          <li class="mb-2">• 24/7 customer support throughout your journey</li>
+          <li class="mb-2">• Pilihan destinasi eksklusif di seluruh dunia</li>
+          <li class="mb-2">• Harga kompetitif dengan penawaran spesial</li>
+          <li class="mb-2">• Layanan pelanggan 24/7 selama perjalanan Anda</li>
         </ul>
       </div>
       <div class="col-md-6">
@@ -94,16 +97,15 @@
 <section class="py-5 bg-light">
   <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="h4 mb-0">Featured Destinations</h2>
-      <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+      <h2 class="h4 mb-0">Destinasi Unggulan</h2>
     </div>
     <div class="row g-4">
       <div class="col-md-4">
         <div class="card h-100">
           <img src="https://www.greekexclusiveproperties.com/wp-content/uploads/2019/10/Santorini-Declared-No1-Island-in-the-World-.jpg" class="card-img-top" alt="Santorini" loading="lazy">
           <div class="card-body">
-            <h5 class="card-title">Santorini, Greece</h5>
-            <p class="card-text text-muted">Experience breathtaking sunsets and pristine villages.</p>
+            <h5 class="card-title">Santorini, Yunani</h5>
+            <p class="card-text text-muted">Nikmati pemandangan matahari terbenam yang menakjubkan dan desa-desa yang indah.</p>
           </div>
           <div class="card-footer bg-white border-0">
             <a href="#" class="btn btn-primary btn-sm">Explore</a>
@@ -115,7 +117,7 @@
           <img src="https://bankraya.co.id/uploads/insights/jO3TRUmMuBAuyilKHgu9Ovjfs3nFoubWiSSjB3Pn.jpg" class="card-img-top" alt="Bali" loading="lazy">
           <div class="card-body">
             <h5 class="card-title">Bali, Indonesia</h5>
-            <p class="card-text text-muted">Discover tropical paradise with ancient temples and beaches.</p>
+            <p class="card-text text-muted">Temukan keindahan tropis dengan pantai dan budaya khas Bali.</p>
           </div>
           <div class="card-footer bg-white border-0">
             <a href="#" class="btn btn-primary btn-sm">Explore</a>
@@ -126,8 +128,8 @@
         <div class="card h-100">
           <img src="https://www.agoda.com/wp-content/uploads/2019/03/Paris-airport-Paris-Eiffel-Tower.jpg" class="card-img-top" alt="Paris">
           <div class="card-body">
-            <h5 class="card-title">Paris, France</h5>
-            <p class="card-text text-muted">Nikmati pemandangan di atas Eiffel Tower dan nikmati kuliner di berbagai restoran khas Perancis.</p>
+            <h5 class="card-title">Paris, Prancis</h5>
+            <p class="card-text text-muted">Nikmati keindahan Eiffel Tower dan kuliner khas Perancis.</p>
           </div>
           <div class="card-footer bg-white border-0">
             <a href="#" class="btn btn-primary btn-sm">Explore</a>
@@ -139,7 +141,7 @@
           <img src="https://cdn.tripster.com/travelguide/wp-content/uploads/2022/11/oahu-hawaii-usa-hanauma-bay-aerial-view-blue-ocean.jpeg" class="card-img-top" alt="Hawaii" loading="lazy">
           <div class="card-body">
             <h5 class="card-title">Hawaii, USA</h5>
-            <p class="card-text text-muted">Experience breathtaking sunsets and pristine villages.</p>
+            <p class="card-text text-muted">Nikmati keindahan pantai, alam, dan budaya Hawaii.</p>
           </div>
           <div class="card-footer bg-white border-0">
             <a href="#" class="btn btn-primary btn-sm">Explore</a>
@@ -151,7 +153,7 @@
           <img src="https://a.travel-assets.com/findyours-php/viewfinder/images/res70/474000/474916-Sydney-Opera-House.jpg" class="card-img-top" alt="Sydney" loading="lazy">
           <div class="card-body">
             <h5 class="card-title">Sydney, Australia</h5>
-            <p class="card-text text-muted">Experience the iconic Sydney Opera House and stunning harbor views.</p>
+            <p class="card-text text-muted">Kunjungi Sydney Opera House dan nikmati pemandangan pelabuhan.</p>
           </div>
           <div class="card-footer bg-white border-0">
             <a href="#" class="btn btn-primary btn-sm">Explore</a>
@@ -163,7 +165,7 @@
           <img src="https://www.gotokyo.org/en/destinations/western-tokyo/shibuya/images/main.jpg" class="card-img-top" alt="Tokyo" loading="lazy">
           <div class="card-body">
             <h5 class="card-title">Tokyo, Japan</h5>
-            <p class="card-text text-muted">Discover the perfect blend of tradition and modernity in Japan's capital.</p>
+            <p class="card-text text-muted">Perpaduan sempurna antara budaya tradisional dan modern.</p>
           </div>
           <div class="card-footer bg-white border-0">
             <a href="#" class="btn btn-primary btn-sm">Explore</a>
@@ -177,19 +179,19 @@
 <section class="py-5">
   <div class="container">
     <div class="text-center mb-5">
-      <h2 class="h3 fw-bold">Explore Our Product and Services</h2>
+      <h2 class="h3 fw-bold">Jelajahi Keunggulan Layanan Kami</h2>
     </div>
     
     <!-- Tab Navigation -->
     <div class="d-flex gap-2 mb-4 justify-content-center flex-wrap">
       <button class="service-tab btn btn-outline-primary rounded-pill px-4 py-2 active" data-service="meals">
-        Meals
+        Makanan
       </button>
       <button class="service-tab btn btn-outline-primary rounded-pill px-4 py-2" data-service="baggage">
-        Baggage
+        Bagasi
       </button>
       <button class="service-tab btn btn-outline-primary rounded-pill px-4 py-2" data-service="seat">
-        Seat
+        Tempat Duduk
       </button>
     </div>
 
@@ -205,12 +207,12 @@
             </div>
             <div class="col-md-7">
               <div class="card-body p-4">
-                <h5 class="card-title fw-bold">Culinary Experiences & In-Flight Dining</h5>
+                <h5 class="card-title fw-bold">In-Flight Dining</h5>
                 <p class="card-text text-muted mb-3">
-                  On most long-haul flights, a complimentary hot meal service is included, with options that often feature a choice of international or local cuisine.
+                  Layanan makanan hangat tersedia pada penerbangan jarak jauh dengan berbagai pilihan menu.
                 </p>
                 <p class="card-text text-muted">
-                  For shorter trips, a selection of premium snacks and beverages is available.
+                  Camilan dan minuman premium tersedia untuk penerbangan jarak pendek
                 </p>
               </div>
             </div>
@@ -229,10 +231,10 @@
               <div class="card-body p-4">
                 <h5 class="card-title fw-bold">Premium Baggage Services</h5>
                 <p class="card-text text-muted mb-3">
-                  Travel with confidence with our generous baggage allowances. Check in your luggage worry-free with our reliable handling system.
+                  Bepergian dengan nyaman dengan layanan bagasi aman dan terpercaya.
                 </p>
                 <p class="card-text text-muted">
-                  Priority baggage handling ensures your bags arrive safely and on time at your destination.
+                  Layanan prioritas memastikan barang Anda sampai dengan aman dan tepat waktu.
                 </p>
               </div>
             </div>
@@ -251,10 +253,10 @@
               <div class="card-body p-4">
                 <h5 class="card-title fw-bold">Comfortable Seating Options</h5>
                 <p class="card-text text-muted mb-3">
-                  Choose from various seat options including economy, premium economy, and business class with enhanced comfort and amenities.
+                  Pilih berbagai jenis kursi termasuk ekonomi, premium, dan bisnis dengan fasilitas lengkap.
                 </p>
                 <p class="card-text text-muted">
-                  Enjoy extra legroom, wider seats, and premium bedding on long-haul flights for maximum comfort during your journey.
+                  Nikmati kenyamanan ekstra dengan ruang kaki yang luas dan fasilitas tambahan.
                 </p>
               </div>
             </div>
@@ -324,8 +326,8 @@
 <section class="py-5 bg-light">
   <div class="container">
     <div class="text-center mb-4">
-      <h2 class="h4">Testimonials</h2>
-      <p class="text-muted">What our customers are saying</p>
+      <h2 class="h4">Testimonial</h2>
+      <p class="text-muted">Apa kata pelanggan kami:</p>
     </div>
     <div class="row">
       <div class="col-md-4">
@@ -355,10 +357,10 @@
 
 <section class="py-5 text-center">
   <div class="container">
-    <h3 class="mb-3">Ready to Start Your Next Adventure?</h3>
-    <p class="text-muted mb-4">Discover breathtaking destinations, create unforgettable memories, and explore the world with our expertly crafted travel packages.</p>
-    <a href="#" class="btn btn-primary btn-lg me-2">Explore Destinations</a>
-    <a href="#" class="btn btn-outline-secondary btn-lg">Plan Your Trip</a>
+    <h3 class="mb-3">Siap Memulai Petualangan Berikutnya?</h3>
+    <p class="text-muted mb-4">Jelajahi destinasi terbaik dan ciptakan pengalaman perjalanan luar biasa bersama kami.</p>
+    <a href="#" class="btn btn-primary btn-lg me-2">Jelajahi Destinasi</a>
+    <a href="#" class="btn btn-outline-secondary btn-lg">Rencanakan Perjalanan</a>
   </div>
 </section>
 
