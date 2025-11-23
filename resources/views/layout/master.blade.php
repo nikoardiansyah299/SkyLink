@@ -51,7 +51,7 @@
                           </a>
 
                           <ul class="dropdown-menu dropdown-menu-end">
-                              <li><a class="dropdown-item" href="/edit-password">Edit Password</a></li>
+                              <li><a class="dropdown-item" href="/profile">Edit Profile</a></li>
                               <li><hr class="dropdown-divider"></li>
                               <li>
                                   <form method="POST" action="{{ route('logout') }}">
