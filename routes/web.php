@@ -9,6 +9,9 @@ use App\Http\Controllers\TravelsController;
 Route::get('/', function () {
     return view('homepage');
 });
+Route::get('/profile', function () {
+    return view('profile');
+}); 
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
