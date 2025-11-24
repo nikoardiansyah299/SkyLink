@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     
     // travels
     Route::get('/travels', [TravelsController::class, 'index']);
+    Route::get('/create/flights', [TravelsController::class, 'create']);
 
 <<<<<<< HEAD
     // bookings
