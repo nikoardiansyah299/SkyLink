@@ -54,7 +54,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/bookings/{id}/modify', [BookingController::class, 'modify'])->name('bookings.modify');
 
 });
-});
 
 Route::middleware('auth')->group(function () {
 
@@ -70,4 +69,3 @@ Route::middleware('auth')->group(function () {
     // UPDATE PASSWORD
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 });
->>>>>>> 5d64dc6 (Auto-sync: file changes)
