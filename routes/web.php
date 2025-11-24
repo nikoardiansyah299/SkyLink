@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/travels', [TravelsController::class, 'index']);
     Route::get('/create/flights', [TravelsController::class, 'create']);
 
-<<<<<<< HEAD
+
     // bookings
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{id}', [BookingController::class, 'show'])->name('bookings.show');
@@ -54,7 +54,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/bookings/{id}/modify', [BookingController::class, 'modify'])->name('bookings.modify');
 
 });
-=======
 });
 
 Route::middleware('auth')->group(function () {
