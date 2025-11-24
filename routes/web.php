@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
     // travels
     Route::get('/travels', [TravelsController::class, 'index']);
 
+<<<<<<< HEAD
     // bookings
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{id}', [BookingController::class, 'show'])->name('bookings.show');
@@ -52,3 +53,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/bookings/{id}/modify', [BookingController::class, 'modify'])->name('bookings.modify');
 
 });
+=======
+});
+
+Route::middleware('auth')->group(function () {
+
+    // LOGOUT
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // PROFILE PAGE
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+
+    // UPDATE PROFILE (username + email)
+    Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
+
+    // UPDATE PASSWORD
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+});
+>>>>>>> 5d64dc6 (Auto-sync: file changes)
