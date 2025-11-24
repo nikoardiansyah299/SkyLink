@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\BandaraModel;
 use Illuminate\Database\Eloquent\Model;
 
 class PenerbanganModel extends Model
@@ -10,11 +11,11 @@ class PenerbanganModel extends Model
 
     public function asal()
     {
-        return $this->belongsTo(Bandara::class, 'id_bandara_asal');
+        return $this->belongsTo(BandaraModel::class, 'id_bandara_asal');
     }
 
     public function tujuan()
     {
-        return $this->belongsTo(Bandara::class, 'id_bandara_tujuan');
+        return $this->belongsTo(BandaraModel::class, 'id_bandara_tujuan');
     }
 }

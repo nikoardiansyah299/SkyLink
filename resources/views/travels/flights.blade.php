@@ -81,81 +81,53 @@
     <!-- JIKA ADMIN → TOMBOL TAMBAH -->
     @if(Auth::check() && Auth::user()->roles === 'admin')
     <div class="mb-3">
-        <a href="/travel/create" class="btn btn-primary">+ Tambah Data Travel</a>
+        <a href="create/flights" class="btn btn-primary">+ Tambah Data Travel</a>
     </div>
     @endif
 
     <!-- GRID LIST FLIGHTS -->
     <div class="row g-4">
 
-        @php
-            // Dummy data
-            $flights = [
-                [
-                    "airline" => "Scoot",
-                    "logo" => "/images/plane1.png",
-                    "from" => "Jakarta (CGK)",
-                    "to" => "Singapore (SIN)",
-                    "date" => "Rab, 3 Des 2025",
-                    "price" => "928.700"
-                ],
-                [
-                    "airline" => "AirAsia (Malaysia)",
-                    "logo" => "/images/plane1.png",
-                    "from" => "Kuala Lumpur (KUL)",
-                    "to" => "Jakarta (CGK)",
-                    "date" => "Rab, 10 Des 2025",
-                    "price" => "819.100"
-                ],
-                [
-                    "airline" => "Citilink",
-                    "logo" => "/images/plane1.png",
-                    "from" => "Singapore (SIN)",
-                    "to" => "Jakarta (CGK)",
-                    "date" => "Rab, 26 Nov 2025",
-                    "price" => "1.432.700"
-                ],
-                [
-                    "airline" => "AirAsia Indonesia",
-                    "logo" => "/images/plane1.png",
-                    "from" => "Jakarta (CGK)",
-                    "to" => "Bangkok (DMK)",
-                    "date" => "Sab, 29 Nov 2025",
-                    "price" => "1.332.700"
-                ],
-            ];
-        @endphp
+        @foreach ($flights as $f)
+          <div style="
+              width: 100%;
+              background: #fff;
+              border-radius: 15px;
+              padding: 20px;
+              margin-bottom: 20px;
+              box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+          ">
 
+              <div>
+                  <div style="font-size: 18px; font-weight: 600;">
+                      {{ $f->nama_maskapai }}
+                  </div>
 
-        @foreach ($flights as $flight)
-        <div class="col-md-6">
-            <div class="flight-card p-3 rounded-4 shadow-sm d-flex justify-content-between align-items-center">
-                <a href="/schedule" style="text-decoration: none; color: black;">
-                    <div class="d-flex align-items-start gap-3">
-                        <img src="{{ $flight['logo'] }}" width="55">
+                  <div style="margin-top: 4px; font-size: 17px; font-weight: bold;">
+                      {{ $f->asal->kota }} ({{ $f->asal->kode_iata }})
+                      ↔
+                      {{ $f->tujuan->kota }} ({{ $f->tujuan->kode_iata }})
+                  </div>
 
-                        <div>
-                            <div class="fw-semibold">{{ $flight['airline'] }}</div>
-                                <div class="fw-bold mt-1" style="font-size: 1.05rem;">
-                                    {{ $flight['from'] }} ↔ {{ $flight['to'] }}
-                                </div>
-                            <div class="text-muted small">{{ $flight['date'] }}</div>
-                        </div>
-                    </div>
+                  <div style="margin-top: 4px; color: #555;">
+                      {{ \Carbon\Carbon::createFromFormat('Y-m-d', $f->tanggal)->locale('id')->isoFormat('dddd, D MMM YYYY') }}
+                  </div>
+              </div>
 
-                    <div class="text-end">
-                        <div class="fw-bold text-primary" style="font-size: 1.2rem;">
-                            Rp {{ $flight['price'] }}
-                        </div>
-                        <div class="text-muted small">Sekali Jalan</div>
+              <div style="text-align: right;">
+                  <div style="font-size: 20px; font-weight: bold; color: #0066FF;">
+                      Rp {{ number_format($f->harga, 0, ',', '.') }}
+                  </div>
 
-                        <a href="/schedule" class="text-primary fw-bold text-decoration-none ms-2">
-                            <span style="font-size: 1.5rem;">›</span>
-                        </a>
-                    </div>
-                </a>
-            </div>
-        </div>
+                  <div style="color: #888; font-size: 14px;">
+                      Sekali Jalan
+                  </div>
+              </div>
+
+          </div>
         @endforeach
 
     </div>
