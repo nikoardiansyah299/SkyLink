@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
     // travels
     Route::get('/travels', [TravelsController::class, 'index']);
     Route::get('/create/flights', [TravelsController::class, 'create']);
+    Route::post('/travels', [TravelsController::class, 'store'])->name('travel.store');
 
     // bookings
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');

@@ -10,6 +10,10 @@ class BandaraModel extends Model
     use HasFactory;
     protected $table = 'bandara';
 
+    protected $fillable = [
+        'nama_bandara', 'negara', 'kota', 'kode_iata'
+    ];
+
     public function penerbanganAsal() {
         return $this->hasMany(Penerbangan::class, 'id_bandara_asal');
     }
@@ -18,7 +22,5 @@ class BandaraModel extends Model
         return $this->hasMany(Penerbangan::class, 'id_bandara_tujan');
     }
 
-    // protected $fillable = [
-    //     'nama_bandara', 'negara', 'kota'
-    // ];
+    
 }
