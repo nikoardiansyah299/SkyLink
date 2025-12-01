@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/bookings/{id}', [BookingController::class, 'show'])->name('bookings.show');
     Route::get('/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
     Route::get('/bookings/{id}/modify', [BookingController::class, 'modify'])->name('bookings.modify');
+    Route::post('/bookings/{id}/status', [BookingController::class, 'updateStatus'])->name('bookings.updateStatus');
 
 });
 
