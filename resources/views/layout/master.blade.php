@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>@yield('title', 'Travel Ticket System')</title>
 
   <!-- Bootstrap CSS -->
@@ -20,10 +21,80 @@
     footer {
       margin-top: auto;
     }
+        /* alert */
+        @keyframes slideIn {
+                from { transform: translateY(-20px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+                from { transform: translateY(0); opacity: 1; }
+                to { transform: translateY(-20px); opacity: 0; }
+        }
+        #globalAlertContainer {
+            position: fixed;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10850;
+            width: auto;
+            max-width: 920px;
+            pointer-events: auto;
+        }
+        #globalAlertContainer .alert { margin: 0 auto; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
   </style>
+  <script>
+    function showAlert(message, type) {
+        if (!document.body) {
+            document.addEventListener('DOMContentLoaded', function() { showAlert(message, type); });
+            return;
+        }
+        var container = document.getElementById('globalAlertContainer');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'globalAlertContainer';
+            container.setAttribute('aria-live', 'polite');
+            container.setAttribute('aria-atomic', 'true');
+            document.body.insertBefore(container, document.body.firstChild);
+        }
+        container.innerHTML = '';
+
+        const alertId = 'global-alert-' + Date.now();
+        const alertEl = document.createElement('div');
+        alertEl.id = alertId;
+        alertEl.className = `alert alert-${type}`;
+        alertEl.setAttribute('role', 'alert');
+        alertEl.style.animation = 'slideIn 0.28s ease';
+        alertEl.style.position = 'relative';
+        alertEl.style.maxWidth = '920px';
+        alertEl.style.margin = '0 auto';
+
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'btn-close';
+        closeBtn.setAttribute('aria-label', 'Close');
+        closeBtn.onclick = () => {
+            alertEl.style.animation = 'slideOut 0.28s ease';
+            setTimeout(() => alertEl.remove(), 280);
+        };
+
+        alertEl.innerHTML = `<div>${message}</div>`;
+        alertEl.appendChild(closeBtn);
+
+        container.appendChild(alertEl);
+
+        setTimeout(() => {
+            if (document.getElementById(alertId)) {
+                alertEl.style.animation = 'slideOut 0.28s ease';
+                setTimeout(() => { if (alertEl.parentNode) alertEl.remove(); }, 280);
+            }
+        }, 5000);
+    }
+  </script>
 </head>
 
 <body>
+    <!-- Global alert container (fixed, centered) -->
+    <div id="globalAlertContainer" aria-live="polite" aria-atomic="true"></div>
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
       <div class="container">

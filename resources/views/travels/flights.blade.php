@@ -11,7 +11,7 @@
     <div class="row align-items-center">
       <div class="col-lg-6">
         <h1 class="display-5 fw-bold">Check & Buy Ticket Prices Here</h1>
-        <p class="lead">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptates placeat atque ipsa, neque sit obcaecati cum maiores maxime eos reiciendis fugit error? Id accusamus officiis doloremque quae saepe aspernatur itaque?</p>
+        <p class="lead">Temukan destinasi memukau dan ciptakan kenangan tak terlupakan melalui layanan kami.</p>
         <p>
           <a href="{{ url('/travels') }}" class="btn btn-light btn-lg me-2">Start Exploring</a>
           <a href="{{ url('/bookings') }}" class="btn btn-outline-light btn-lg">View Booking</a>

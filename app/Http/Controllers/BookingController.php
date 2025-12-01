@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pemesanan;
+use App\Models\Penerbangan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -81,6 +83,10 @@ class BookingController extends Controller
         $p->status = $map[$statusInput];
         $p->save();
 
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'status' => $map[$statusInput]]);
+        }
+
         return redirect()->back()->with('success', 'Booking status updated.');
     }
 
@@ -111,20 +117,136 @@ class BookingController extends Controller
     }
 
     /**
-     * Cancel booking
+     * Cancel booking (client only)
      */
-    public function cancel($id)
+    public function cancel(Request $request, $id)
     {
-        // Handle cancellation logic
-        return redirect()->route('bookings.index')->with('success', 'Booking cancelled successfully.');
+        $pemesanan = Pemesanan::findOrFail($id);
+
+        // Authorization: user can only cancel their own booking
+        if ($pemesanan->id_users !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Only pending bookings can be cancelled
+        if (strtolower($pemesanan->status) !== 'pending') {
+            return redirect()->route('bookings.index')
+                ->with('error', 'Only pending bookings can be cancelled.');
+        }
+
+        $pemesanan->status = 'Cancelled';
+        $pemesanan->save();
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'status' => 'Cancelled']);
+        }
+
+        return redirect()->route('bookings.index')
+            ->with('success', 'Booking cancelled successfully.');
     }
 
     /**
-     * Modify booking
+     * Get alternative flights with same route but different dates (for client modify)
      */
-    public function modify($id)
+    public function getAlternativeFlights($id)
     {
-        // Handle modification logic
-        return redirect()->route('bookings.index')->with('info', 'Booking modification in progress.');
+        $pemesanan = Pemesanan::findOrFail($id);
+
+        // Authorization
+        if ($pemesanan->id_users !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Get the original flight's route
+        $originalFlight = $pemesanan->penerbangan;
+        
+        // Find other flights with same route (same origin and destination airports)
+        $alternatives = Penerbangan::where('id_bandara_asal', $originalFlight->id_bandara_asal)
+            ->where('id_bandara_tujuan', $originalFlight->id_bandara_tujuan)
+            ->where('id', '!=', $originalFlight->id) // Exclude the current booking
+            ->with(['bandaraAsal', 'bandaraTujuan'])
+            ->get()
+            ->map(function ($flight) use ($pemesanan) {
+                return [
+                    'id' => $flight->id,
+                    'airline' => $flight->nama_maskapai,
+                    'date' => \Carbon\Carbon::parse($flight->tanggal)->format('D, j M Y'),
+                    'time' => \Carbon\Carbon::parse($flight->jam_berangkat)->format('h:i A'),
+                    'departure_time' => $flight->jam_berangkat,
+                    'arrival_time' => \Carbon\Carbon::parse($flight->jam_tiba)->format('h:i A'),
+                    'price' => $flight->harga,
+                    'total_price' => $flight->harga * $pemesanan->jumlah_tiket,
+                ];
+            });
+
+        return response()->json($alternatives);
+    }
+
+    /**
+     * Change booking to a different flight (same route, different date)
+     */
+    public function changeToFlight(Request $request, $id)
+    {
+        $pemesanan = Pemesanan::findOrFail($id);
+
+        // Authorization
+        if ($pemesanan->id_users !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $request->validate([
+            'flight_id' => 'required|integer|exists:penerbangan,id',
+        ]);
+
+        $newFlight = Penerbangan::findOrFail($request->flight_id);
+        $originalFlight = $pemesanan->penerbangan;
+
+        // Verify new flight is same route as original
+        if ($newFlight->id_bandara_asal !== $originalFlight->id_bandara_asal ||
+            $newFlight->id_bandara_tujuan !== $originalFlight->id_bandara_tujuan) {
+            return redirect()->back()->with('error', 'Selected flight is not on the same route.');
+        }
+
+        $pemesanan->id_penerbangan = $newFlight->id;
+        $pemesanan->save();
+
+        $message = 'Booking updated to ' . $newFlight->nama_maskapai . ' on ' . \Carbon\Carbon::parse($newFlight->tanggal)->format('D, j M Y') . '.';
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => $message, 'status' => $pemesanan->status]);
+        }
+
+        return redirect()->route('bookings.index')
+            ->with('success', $message);
+    }
+
+    /**
+     * Delete a booking (owner or admin).
+     */
+    public function destroy(Request $request, $id)
+    {
+        $pemesanan = Pemesanan::with('tiket')->findOrFail($id);
+
+        $user = Auth::user();
+
+        // Allow owner or admin to delete
+        if (! $user || ($user->roles !== 'admin' && $pemesanan->id_users !== $user->id)) {
+            abort(403, 'Unauthorized');
+        }
+
+        DB::transaction(function () use ($pemesanan) {
+            // Delete related tickets first (if relation exists)
+            if (method_exists($pemesanan, 'tiket')) {
+                $pemesanan->tiket()->delete();
+            }
+
+            $pemesanan->delete();
+        });
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return redirect()->route('bookings.index')->with('success', 'Booking deleted successfully.');
     }
 }
