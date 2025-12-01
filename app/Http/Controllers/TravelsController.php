@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PenerbanganModel;
-use App\Models\BandaraModel;
+use App\Models\Bandara;
 use Illuminate\Http\Request;
 
 class TravelsController extends Controller
@@ -15,7 +15,7 @@ class TravelsController extends Controller
     }
 
     public function create(){
-        $bandara = BandaraModel::all();
+        $bandara = Bandara::all();
         return view('/travels/create', compact('bandara'));
     }
 

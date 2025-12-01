@@ -23,10 +23,21 @@ class BookingController extends Controller
             $pemesanan = $query->where('id_users', Auth::id())->get();
         }
 
-        // Transform database records to match view format
+        // Transform database records to match view format (localized to Indonesian)
         $bookings = $pemesanan->map(function ($p) {
             $seats = $p->tiket->pluck('seat')->implode(', ');
-            
+
+            $departureDate = \Carbon\Carbon::parse($p->penerbangan->tanggal)->locale('id')->translatedFormat('l, j F Y');
+            $departureTime = \Carbon\Carbon::parse($p->penerbangan->jam_berangkat)->format('H:i');
+
+            $status = strtolower($p->status);
+            $statusLabels = [
+                'pending' => 'Menunggu',
+                'confirmed' => 'Terkonfirmasi',
+                'completed' => 'Selesai',
+                'cancelled' => 'Dibatalkan',
+            ];
+
             return [
                 'id' => $p->id,
                 'airline' => $p->penerbangan->nama_maskapai,
@@ -34,14 +45,15 @@ class BookingController extends Controller
                 'flight_number' => $p->id . '-' . str_pad($p->id_penerbangan, 4, '0', STR_PAD_LEFT),
                 'from' => $p->penerbangan->bandaraAsal->nama_bandara . ' (' . $p->penerbangan->bandaraAsal->kode_iata . ')',
                 'to' => $p->penerbangan->bandaraTujuan->nama_bandara . ' (' . $p->penerbangan->bandaraTujuan->kode_iata . ')',
-                'departure_date' => \Carbon\Carbon::parse($p->penerbangan->tanggal)->format('D, j M Y'),
-                'departure_time' => \Carbon\Carbon::parse($p->penerbangan->jam_berangkat)->format('h:i A'),
+                'departure_date' => $departureDate,
+                'departure_time' => $departureTime,
                 'passengers' => $p->jumlah_tiket,
                 'seats' => $seats ?: 'N/A',
                 'reference_code' => $p->kode,
                 'total_price' => $p->penerbangan->harga * $p->jumlah_tiket,
-                'status' => strtolower($p->status),
-                'status_badge' => $this->getStatusBadge(strtolower($p->status)),
+                'status' => $status,
+                'status_label' => $statusLabels[$status] ?? ucfirst($status),
+                'status_badge' => $this->getStatusBadge($status),
             ];
         });
 
@@ -76,7 +88,7 @@ class BookingController extends Controller
         ];
 
         if (! array_key_exists($statusInput, $map)) {
-            return redirect()->back()->with('error', 'Invalid status');
+            return redirect()->back()->with('error', 'Status tidak valid');
         }
 
         $p = Pemesanan::findOrFail($id);
@@ -87,7 +99,7 @@ class BookingController extends Controller
             return response()->json(['success' => true, 'status' => $map[$statusInput]]);
         }
 
-        return redirect()->back()->with('success', 'Booking status updated.');
+        return redirect()->back()->with('success', 'Status pemesanan diperbarui.');
     }
 
     /**
@@ -131,7 +143,7 @@ class BookingController extends Controller
         // Only pending bookings can be cancelled
         if (strtolower($pemesanan->status) !== 'pending') {
             return redirect()->route('bookings.index')
-                ->with('error', 'Only pending bookings can be cancelled.');
+                ->with('error', 'Hanya pemesanan yang berstatus Menunggu yang dapat dibatalkan.');
         }
 
         $pemesanan->status = 'Cancelled';
@@ -142,7 +154,7 @@ class BookingController extends Controller
         }
 
         return redirect()->route('bookings.index')
-            ->with('success', 'Booking cancelled successfully.');
+            ->with('success', 'Pemesanan berhasil dibatalkan.');
     }
 
     /**
@@ -170,10 +182,10 @@ class BookingController extends Controller
                 return [
                     'id' => $flight->id,
                     'airline' => $flight->nama_maskapai,
-                    'date' => \Carbon\Carbon::parse($flight->tanggal)->format('D, j M Y'),
-                    'time' => \Carbon\Carbon::parse($flight->jam_berangkat)->format('h:i A'),
+                    'date' => \Carbon\Carbon::parse($flight->tanggal)->locale('id')->translatedFormat('l, j F Y'),
+                    'time' => \Carbon\Carbon::parse($flight->jam_berangkat)->format('H:i'),
                     'departure_time' => $flight->jam_berangkat,
-                    'arrival_time' => \Carbon\Carbon::parse($flight->jam_tiba)->format('h:i A'),
+                    'arrival_time' => \Carbon\Carbon::parse($flight->jam_tiba)->format('H:i'),
                     'price' => $flight->harga,
                     'total_price' => $flight->harga * $pemesanan->jumlah_tiket,
                 ];
@@ -210,7 +222,8 @@ class BookingController extends Controller
         $pemesanan->id_penerbangan = $newFlight->id;
         $pemesanan->save();
 
-        $message = 'Booking updated to ' . $newFlight->nama_maskapai . ' on ' . \Carbon\Carbon::parse($newFlight->tanggal)->format('D, j M Y') . '.';
+        $localizedDate = \Carbon\Carbon::parse($newFlight->tanggal)->locale('id')->translatedFormat('l, j F Y');
+        $message = 'Pemesanan diperbarui ke ' . $newFlight->nama_maskapai . ' pada ' . $localizedDate . '.';
 
         if ($request->wantsJson()) {
             return response()->json(['success' => true, 'message' => $message, 'status' => $pemesanan->status]);
@@ -247,6 +260,6 @@ class BookingController extends Controller
             return response()->json(['success' => true]);
         }
 
-        return redirect()->route('bookings.index')->with('success', 'Booking deleted successfully.');
+        return redirect()->route('bookings.index')->with('success', 'Pemesanan berhasil dihapus.');
     }
 }

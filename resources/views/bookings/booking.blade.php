@@ -1,5 +1,5 @@
 @extends('layout.master')
-@section('title', 'My Bookings | SkyLink')
+@section('title', 'Pesanan Saya | SkyLink')
 
 @section('content')
 
@@ -10,8 +10,8 @@
   <div class="container position-relative" style="z-index:2;">
     <div class="row align-items-center">
       <div class="col-lg-8">
-        <h1 class="display-5 fw-bold">My Bookings</h1>
-        <p class="lead">View and manage all your flight bookings in one place.</p>
+        <h1 class="display-5 fw-bold">Pesanan Saya</h1>
+        <p class="lead">Lihat dan kelola semua pemesanan penerbangan Anda di satu tempat.</p>
       </div>
     </div>
   </div>
@@ -37,9 +37,9 @@
     <!-- NO BOOKINGS MESSAGE -->
     @if($bookings->isEmpty())
     <div class="alert alert-info text-center py-5" role="alert">
-        <h5 class="fw-bold mb-2">No bookings yet</h5>
-        <p class="text-muted mb-3">You haven't booked any flights yet. Start exploring and book your next adventure!</p>
-        <a href="{{ url('/travels') }}" class="btn btn-primary">Browse Flights</a>
+        <h5 class="fw-bold mb-2">Belum ada pemesanan</h5>
+        <p class="text-muted mb-3">Anda belum memesan penerbangan. Jelajahi penerbangan dan pesan perjalanan Anda sekarang!</p>
+        <a href="{{ url('/travels') }}" class="btn btn-primary">Jelajahi Penerbangan</a>
     </div>
     @else
 
@@ -61,7 +61,7 @@
                     
                     <!-- STATUS BADGE -->
                     <span class="badge bg-{{ $booking['status_badge'] }}">
-                        {{ ucfirst($booking['status']) }}
+                        {{ $booking['status_label'] ?? ucfirst($booking['status']) }}
                     </span>
                 </div>
 
@@ -72,19 +72,19 @@
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
                             <div class="fw-bold" style="font-size: 1.1rem;">{{ $booking['from'] }}</div>
-                            <div class="text-muted small">Departure</div>
+                            <div class="text-muted small">Keberangkatan</div>
                         </div>
                         <div class="text-center">
                             <i class="bi bi-arrow-right"></i>
                         </div>
                         <div class="text-end">
                             <div class="fw-bold" style="font-size: 1.1rem;">{{ $booking['to'] }}</div>
-                            <div class="text-muted small">Arrival</div>
+                            <div class="text-muted small">Kedatangan</div>
                         </div>
                     </div>
                     
                     <div class="small text-muted">
-                        <strong>Date:</strong> {{ $booking['departure_date'] }} at {{ $booking['departure_time'] }}
+                        <strong>Tanggal:</strong> {{ $booking['departure_date'] }} pukul {{ $booking['departure_time'] }}
                     </div>
                 </div>
 
@@ -93,11 +93,11 @@
                 <!-- PASSENGERS & SEATS -->
                 <div class="row g-2 mb-3 text-center">
                     <div class="col-6">
-                        <div class="small text-muted">Passengers</div>
+                        <div class="small text-muted">Penumpang</div>
                         <div class="fw-bold">{{ $booking['passengers'] }}</div>
                     </div>
                     <div class="col-6">
-                        <div class="small text-muted">Seat(s)</div>
+                        <div class="small text-muted">Kursi</div>
                         <div class="fw-bold">{{ $booking['seats'] }}</div>
                     </div>
                 </div>
@@ -107,11 +107,11 @@
                 <!-- BOOKING REFERENCE & PRICE -->
                 <div class="d-flex justify-content-between align-items-end mb-3">
                     <div>
-                        <div class="small text-muted">Booking Reference</div>
+                        <div class="small text-muted">Kode Pemesanan</div>
                         <div class="fw-bold text-primary">{{ $booking['reference_code'] }}</div>
                     </div>
                     <div class="text-end">
-                        <div class="small text-muted">Total Price</div>
+                        <div class="small text-muted">Total Harga</div>
                         <div class="fw-bold text-primary" style="font-size: 1.3rem;">Rp {{ number_format($booking['total_price'], 0, ',', '.') }}</div>
                     </div>
                 </div>
@@ -120,16 +120,16 @@
 
                 <!-- ACTIONS -->
                 <div class="d-flex gap-2">
-                    <a href="{{ url('/bookings/' . $booking['id']) }}" class="btn btn-sm btn-primary">View Details</a>
+                    <a href="{{ url('/bookings/' . $booking['id']) }}" class="btn btn-sm btn-primary">Lihat Detail</a>
 
                     @if(Auth::check() && Auth::user()->roles === 'admin')
                         <!-- Admin: status change form -->
                         <form action="{{ route('bookings.updateStatus', $booking['id']) }}" method="POST" class="d-flex ms-2">
                             @csrf
                             <select name="status" class="form-select form-select-sm me-2" style="min-width:130px;">
-                                <option value="pending" {{ $booking['status'] === 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="confirmed" {{ $booking['status'] === 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                                <option value="cancelled" {{ $booking['status'] === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                <option value="pending" {{ $booking['status'] === 'pending' ? 'selected' : '' }}>Menunggu</option>
+                                <option value="confirmed" {{ $booking['status'] === 'confirmed' ? 'selected' : '' }}>Terkonfirmasi</option>
+                                <option value="cancelled" {{ $booking['status'] === 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
                             </select>
                             <button type="submit" class="btn btn-sm btn-success">Save</button>
                         </form>
@@ -137,25 +137,25 @@
                         @if($booking['status'] === 'pending')
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-outline-danger dropdown-toggle" type="button" id="actionsDropdown{{ $booking['id'] }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Actions
+                                    Aksi
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="actionsDropdown{{ $booking['id'] }}">
-                                    <li><a class="dropdown-item text-danger" href="#" onclick="ajaxCancel({{ $booking['id'] }}, this); return false;">Cancel Booking</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#" onclick="ajaxCancel({{ $booking['id'] }}, this); return false;">Batalkan Pemesanan</a></li>
                                 </ul>
                             </div>
                         @elseif($booking['status'] === 'confirmed')
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-outline-warning dropdown-toggle" type="button" id="modifyDropdown{{ $booking['id'] }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Modify
+                                    Ubah
                                 </button>
                                 <ul class="dropdown-menu p-2" style="min-width:320px;" aria-labelledby="modifyDropdown{{ $booking['id'] }}" id="alternativeDropdown{{ $booking['id'] }}">
-                                    <li class="text-center small text-muted py-2">Open to load alternatives</li>
+                                    <li class="text-center small text-muted py-2">Buka untuk memuat alternatif</li>
                                 </ul>
                             </div>
                         @endif
 
                         @if($booking['status'] === 'cancelled')
-                            <button type="button" class="btn btn-sm btn-danger" onclick="ajaxDelete({{ $booking['id'] }}, this)">Delete</button>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="ajaxDelete({{ $booking['id'] }}, this)">Hapus</button>
                         @endif
                     @endif
                 </div>
@@ -244,7 +244,7 @@
         if (!menuEl) return;
         if (menuEl.dataset.loaded) return; // only load once
 
-        menuEl.innerHTML = '<li class="text-center py-2"><div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div> Loading...</li>';
+        menuEl.innerHTML = '<li class="text-center py-2"><div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Memuat...</span></div> Memuat...</li>';
 
         fetch(`/bookings/${bookingId}/alternatives`)
             .then(response => response.json())
@@ -262,7 +262,7 @@
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <div class="fw-semibold">${flight.airline}</div>
-                                    <div class="small text-muted">${flight.date} at ${flight.time} — ${flight.arrival_time} arrival</div>
+                                    <div class="small text-muted">${flight.date} pukul ${flight.time} — tiba ${flight.arrival_time}</div>
                                     <div class="small text-primary fw-bold">Rp ${Number(flight.total_price).toLocaleString('id-ID')}</div>
                                 </div>
                                 <div>
@@ -328,14 +328,14 @@
                     }
                 }
 
-                showAlert('Booking cancelled', 'success');
+                showAlert('Pemesanan dibatalkan', 'success');
             } else {
-                showAlert((data && data.message) ? data.message : 'Failed to cancel booking', 'danger');
+                showAlert((data && data.message) ? data.message : 'Gagal membatalkan pemesanan', 'danger');
                 btn.disabled = false;
             }
         }).catch(err => {
             console.error(err);
-            showAlert('Failed to cancel booking', 'danger');
+            showAlert('Gagal membatalkan pemesanan', 'danger');
             btn.disabled = false;
         });
     }
@@ -357,16 +357,16 @@
         }).then(r => r.json())
         .then(data => {
             if (data && data.success) {
-                showAlert(data.message || 'Booking updated', 'success');
+                showAlert(data.message || 'Pemesanan diperbarui', 'success');
                 // reload to reflect updated flight details
                 setTimeout(() => location.reload(), 700);
             } else {
-                showAlert((data && data.message) ? data.message : 'Failed to change flight', 'danger');
+                showAlert((data && data.message) ? data.message : 'Gagal mengubah penerbangan', 'danger');
                 btn.disabled = false;
             }
         }).catch(err => {
             console.error(err);
-            showAlert('Failed to change flight', 'danger');
+            showAlert('Gagal mengubah penerbangan', 'danger');
             btn.disabled = false;
         });
     }
@@ -392,14 +392,14 @@
                 if (card && card.parentElement) {
                     card.parentElement.removeChild(card);
                 }
-                showAlert('Booking deleted', 'success');
+                showAlert('Pemesanan dihapus', 'success');
             } else {
-                showAlert((data && data.message) ? data.message : 'Failed to delete booking', 'danger');
+                showAlert((data && data.message) ? data.message : 'Gagal menghapus pemesanan', 'danger');
                 if (btn) btn.disabled = false;
             }
         }).catch(err => {
             console.error(err);
-            showAlert('Failed to delete booking', 'danger');
+            showAlert('Gagal menghapus pemesanan', 'danger');
             if (btn) btn.disabled = false;
         });
     }
@@ -426,14 +426,14 @@
             }).then(r => r.json())
             .then(data => {
                 if (data && data.success) {
-                    showAlert('Status updated', 'success');
+                    showAlert('Status diperbarui', 'success');
                     setTimeout(() => location.reload(), 700);
                 } else {
-                    showAlert('Failed to update status', 'danger');
+                    showAlert('Gagal memperbarui status', 'danger');
                 }
             }).catch(err => {
                 console.error(err);
-                showAlert('Failed to update status', 'danger');
+                showAlert('Gagal memperbarui status', 'danger');
             });
         }
     });
