@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\BandaraModel;
+use App\Models\Bandara;
+use App\Models\Maskapai;
 use Illuminate\Database\Eloquent\Model;
 
 class PenerbanganModel extends Model
@@ -15,13 +16,17 @@ class PenerbanganModel extends Model
 
     public function asal()
     {
-        return $this->belongsTo(BandaraModel::class, 'id_bandara_asal');
+        return $this->belongsTo(Bandara::class, 'id_bandara_asal');
     }
 
     public function tujuan()
     {
-        return $this->belongsTo(BandaraModel::class, 'id_bandara_tujuan');
+        return $this->belongsTo(Bandara::class, 'id_bandara_tujuan');
     }
 
+    public function maskapai()
+    {
+        return $this->belongsTo(Maskapai::class, 'maskapai_id');
+    }
 
 }

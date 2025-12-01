@@ -33,5 +33,10 @@ class DatabaseSeeder extends Seeder
             'roles' => 'admin',
             'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
         ]);
+
+        $this->call([
+            MaskapaiSeeder::class,
+            BandaraSeeder::class,
+        ]);
     }
 }
