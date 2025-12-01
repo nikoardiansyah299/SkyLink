@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pemesanan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -12,78 +13,53 @@ class BookingController extends Controller
      */
     public function index()
     {
-        // Dummy bookings data - Replace with database queries when ready
-        $bookings = [
-            [
-                'id' => 1,
-                'airline' => 'Scoot',
-                'airline_logo' => '/images/plane1.png',
-                'flight_number' => 'TR-2025-001',
-                'from' => 'Jakarta (CGK)',
-                'to' => 'Singapore (SIN)',
-                'departure_date' => 'Wed, 3 Dec 2025',
-                'departure_time' => '08:00 AM',
-                'passengers' => 2,
-                'seats' => '12A, 12B',
-                'reference_code' => 'BK123456',
-                'total_price' => 928700,
-                'status' => 'confirmed',
-                'status_badge' => 'confirmed',
-            ],
-            [
-                'id' => 2,
-                'airline' => 'AirAsia Indonesia',
-                'airline_logo' => '/images/plane1.png',
-                'flight_number' => 'TR-2025-002',
-                'from' => 'Jakarta (CGK)',
-                'to' => 'Bangkok (DMK)',
-                'departure_date' => 'Sat, 29 Nov 2025',
-                'departure_time' => '02:30 PM',
-                'passengers' => 1,
-                'seats' => '5C',
-                'reference_code' => 'BK654321',
-                'total_price' => 1332700,
-                'status' => 'pending',
-                'status_badge' => 'pending',
-            ],
-            [
-                'id' => 3,
-                'airline' => 'Citilink',
-                'airline_logo' => '/images/plane1.png',
-                'flight_number' => 'TR-2025-003',
-                'from' => 'Singapore (SIN)',
-                'to' => 'Jakarta (CGK)',
-                'departure_date' => 'Wed, 26 Nov 2025',
-                'departure_time' => '10:45 AM',
-                'passengers' => 4,
-                'seats' => '8A, 8B, 8C, 8D',
-                'reference_code' => 'BK789123',
-                'total_price' => 1432700,
-                'status' => 'completed',
-                'status_badge' => 'completed',
-            ],
-            [
-                'id' => 4,
-                'airline' => 'AirAsia (Malaysia)',
-                'airline_logo' => '/images/plane1.png',
-                'flight_number' => 'TR-2025-004',
-                'from' => 'Kuala Lumpur (KUL)',
-                'to' => 'Jakarta (CGK)',
-                'departure_date' => 'Wed, 10 Dec 2025',
-                'departure_time' => '06:15 PM',
-                'passengers' => 1,
-                'seats' => '15F',
-                'reference_code' => 'BK456789',
-                'total_price' => 819100,
-                'status' => 'cancelled',
-                'status_badge' => 'cancelled',
-            ],
-        ];
+        // Fetch bookings from database for the authenticated user
+        $pemesanan = Pemesanan::where('id_users', Auth::id())
+            ->with(['penerbangan.bandaraAsal', 'penerbangan.bandaraTujuan', 'tiket'])
+            ->get();
+
+        // Transform database records to match view format
+        $bookings = $pemesanan->map(function ($p) {
+            $seats = $p->tiket->pluck('seat')->implode(', ');
+            
+            return [
+                'id' => $p->id,
+                'airline' => $p->penerbangan->nama_maskapai,
+                'airline_logo' => $p->penerbangan->gambar,
+                'flight_number' => $p->id . '-' . str_pad($p->id_penerbangan, 4, '0', STR_PAD_LEFT),
+                'from' => $p->penerbangan->bandaraAsal->nama_bandara . ' (' . $p->penerbangan->bandaraAsal->kode_iata . ')',
+                'to' => $p->penerbangan->bandaraTujuan->nama_bandara . ' (' . $p->penerbangan->bandaraTujuan->kode_iata . ')',
+                'departure_date' => \Carbon\Carbon::parse($p->penerbangan->tanggal)->format('D, j M Y'),
+                'departure_time' => \Carbon\Carbon::parse($p->penerbangan->jam_berangkat)->format('h:i A'),
+                'passengers' => $p->jumlah_tiket,
+                'seats' => $seats ?: 'N/A',
+                'reference_code' => $p->kode,
+                'total_price' => $p->penerbangan->harga * $p->jumlah_tiket,
+                'status' => strtolower($p->status),
+                'status_badge' => $this->getStatusBadge(strtolower($p->status)),
+            ];
+        });
 
         return view('bookings.booking', [
-            'bookings' => collect($bookings),
+            'bookings' => $bookings,
         ]);
     }
+
+    /**
+     * Get status badge color based on status
+     */
+    private function getStatusBadge($status)
+    {
+        $badges = [
+            'confirmed' => 'success',
+            'pending' => 'warning',
+            'completed' => 'info',
+            'cancelled' => 'danger',
+        ];
+
+        return $badges[$status] ?? 'secondary';
+    }
+
 
     /**
      * Show booking details
