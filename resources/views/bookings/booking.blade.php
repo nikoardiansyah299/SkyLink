@@ -119,12 +119,26 @@
 
                 <!-- ACTIONS -->
                 <div class="d-flex gap-2">
-                    <a href="{{ url('/bookings/' . $booking['id']) }}" class="btn btn-sm btn-primary flex-grow-1">View Details</a>
-                    
-                    @if($booking['status'] === 'pending')
-                        <a href="{{ url('/bookings/' . $booking['id'] . '/cancel') }}" class="btn btn-sm btn-outline-danger">Cancel</a>
-                    @elseif($booking['status'] === 'confirmed')
-                        <a href="{{ url('/bookings/' . $booking['id'] . '/modify') }}" class="btn btn-sm btn-outline-warning">Modify</a>
+                    <a href="{{ url('/bookings/' . $booking['id']) }}" class="btn btn-sm btn-primary">View Details</a>
+
+                    @if(Auth::check() && Auth::user()->roles === 'admin')
+                        <!-- Admin: status change form -->
+                        <form action="{{ route('bookings.updateStatus', $booking['id']) }}" method="POST" class="d-flex ms-2">
+                            @csrf
+                            <select name="status" class="form-select form-select-sm me-2" style="min-width:130px;">
+                                <option value="pending" {{ $booking['status'] === 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="confirmed" {{ $booking['status'] === 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                                <option value="accepted">Accepted</option>
+                                <option value="cancelled" {{ $booking['status'] === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-success">Save</button>
+                        </form>
+                    @else
+                        @if($booking['status'] === 'pending')
+                            <a href="{{ url('/bookings/' . $booking['id'] . '/cancel') }}" class="btn btn-sm btn-outline-danger">Cancel</a>
+                        @elseif($booking['status'] === 'confirmed')
+                            <a href="{{ url('/bookings/' . $booking['id'] . '/modify') }}" class="btn btn-sm btn-outline-warning">Modify</a>
+                        @endif
                     @endif
                 </div>
 

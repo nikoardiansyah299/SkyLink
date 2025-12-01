@@ -13,10 +13,13 @@ class BookingController extends Controller
      */
     public function index()
     {
-        // Fetch bookings from database for the authenticated user
-        $pemesanan = Pemesanan::where('id_users', Auth::id())
-            ->with(['penerbangan.bandaraAsal', 'penerbangan.bandaraTujuan', 'tiket'])
-            ->get();
+        // If admin, fetch all bookings; otherwise fetch only the authenticated user's bookings
+        $query = Pemesanan::with(['penerbangan.bandaraAsal', 'penerbangan.bandaraTujuan', 'tiket']);
+        if (Auth::check() && Auth::user()->roles === 'admin') {
+            $pemesanan = $query->get();
+        } else {
+            $pemesanan = $query->where('id_users', Auth::id())->get();
+        }
 
         // Transform database records to match view format
         $bookings = $pemesanan->map(function ($p) {
@@ -43,6 +46,42 @@ class BookingController extends Controller
         return view('bookings.booking', [
             'bookings' => $bookings,
         ]);
+    }
+
+    /**
+     * Update booking status (admin only)
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        if (! $user || $user->roles !== 'admin') {
+            abort(403, 'Forbidden');
+        }
+
+        $request->validate([
+            'status' => 'required|string',
+        ]);
+
+        $statusInput = strtolower($request->input('status'));
+
+        // map friendly inputs to enum values stored in DB
+        $map = [
+            'confirmed' => 'Confirmed',
+            'pending' => 'Pending',
+            'cancelled' => 'Cancelled',
+            'accepted' => 'Confirmed',
+        ];
+
+        if (! array_key_exists($statusInput, $map)) {
+            return redirect()->back()->with('error', 'Invalid status');
+        }
+
+        $p = Pemesanan::findOrFail($id);
+        $p->status = $map[$statusInput];
+        $p->save();
+
+        return redirect()->back()->with('success', 'Booking status updated.');
     }
 
     /**
