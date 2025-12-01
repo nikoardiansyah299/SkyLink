@@ -17,28 +17,28 @@
           <a href="{{ url('/bookings') }}" class="btn btn-outline-light btn-lg">View Booking</a>
         </p>
       </div>
-      <div class="col-lg-6 mt-4 mt-lg-0">
+            <div class="col-lg-6 mt-4 mt-lg-0">
         <div class="card shadow-sm">
           <div class="card-body">
             <h5 class="card-title">Cari Penerbangan</h5>
-            <form class="row g-2" action="#" method="post">
+            <form class="row g-2" action="{{ url('/travels') }}" method="get">
               <div class="col-12">
-                <input type="text" name="destination" class="form-control" placeholder="Destinasi" required>
+                <input type="text" name="destination" class="form-control" placeholder="Destinasi" value="{{ request('destination') }}">
                 <div class="small text-muted mt-1">Tanggal berangkat</div>
               </div>
               <div class="col-md-6">
-                <input type="date" name="checkin" class="form-control" required>
+                <input type="date" name="checkin" class="form-control" value="{{ request('checkin') }}">
                 <div class="small text-muted mt-1">Penumpang Dewasa</div>
               </div>
               <div class="col-md-6">
-                <input type="date" name="checkout" class="form-control" required>
+                <input type="date" name="checkout" class="form-control" value="{{ request('checkout') }}">
                 <div class="small text-muted mt-1">Anak-anak</div>
               </div>
               <div class="col-md-6">
-                <input type="number" name="adults" class="form-control" min="1" value="2" required>
+                <input type="number" name="adults" class="form-control" min="1" value="{{ request('adults', 2) }}">
               </div>
               <div class="col-md-6">
-                <input type="number" name="children" class="form-control" min="0" value="0">
+                <input type="number" name="children" class="form-control" min="0" value="{{ request('children', 0) }}">
               </div>
               <div class="col-12">
                 <button class="btn btn-primary w-100">Cari</button>
@@ -131,6 +131,54 @@
         @endforeach
 
     </div>
+
+    @if(isset($returnFlights) && $returnFlights)
+    <hr class="my-4">
+    <h4>Penerbangan Pulang ({{ request('checkout') }})</h4>
+    <div class="row g-4 mt-2">
+      @foreach ($returnFlights as $f)
+        <div style="
+          width: 100%;
+          background: #fff;
+          border-radius: 15px;
+          padding: 20px;
+          margin-bottom: 20px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        ">
+
+          <div>
+            <div style="font-size: 18px; font-weight: 600;">
+              {{ $f->nama_maskapai }}
+            </div>
+
+            <div style="margin-top: 4px; font-size: 17px; font-weight: bold;">
+              {{ $f->asal->kota }} ({{ $f->asal->kode_iata }})
+              ↔
+              {{ $f->tujuan->kota }} ({{ $f->tujuan->kode_iata }})
+            </div>
+
+            <div style="margin-top: 4px; color: #555;">
+              {{ \Carbon\Carbon::createFromFormat('Y-m-d', $f->tanggal)->locale('id')->isoFormat('dddd, D MMM YYYY') }}
+            </div>
+          </div>
+
+          <div style="text-align: right;">
+            <div style="font-size: 20px; font-weight: bold; color: #0066FF;">
+              Rp {{ number_format($f->harga, 0, ',', '.') }}
+            </div>
+
+            <div style="color: #888; font-size: 14px;">
+              Sekali Jalan
+            </div>
+          </div>
+
+        </div>
+      @endforeach
+    </div>
+    @endif
 
 </div>
 
