@@ -8,6 +8,7 @@ use App\Models\Tiket;
 use App\Models\Pemesanan;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 
 class TiketController extends Controller
 {
@@ -43,12 +44,19 @@ class TiketController extends Controller
     // =============================
     public function store(Request $r)
     {
-        $r->validate([
+        $rules = [
             'id_penerbangan'       => 'required|exists:penerbangan,id',
             'nama_penumpang.*'     => 'required|string',
             'nik.*'                => 'required|string',
             'seat.*'               => 'required|string',
-        ]);
+        ];
+
+        // If the tiket table defines a `kelas` column, require kelas selection per passenger
+        if (Schema::hasColumn('tiket', 'kelas')) {
+            $rules['kelas.*'] = 'required|string';
+        }
+
+        $r->validate($rules);
 
         $flight = Penerbangan::findOrFail($r->id_penerbangan);
 
@@ -73,7 +81,7 @@ class TiketController extends Controller
         // the `total` field when creating the record. If you prefer to
         // persist total, add the column via migration.
         $pemesananData = [
-            'id_users'        => \Auth::id(),
+            'id_users'        => Auth::id(),
             'id_penerbangan'  => $flight->id,
             'kode'            => $this->generateUniqueCode(),
             'jumlah_tiket'    => $jumlahTiket,
@@ -89,13 +97,19 @@ class TiketController extends Controller
             // include `kelas` in the insert. The booking form still
             // collects a class selection for UX, but we won't persist it
             // unless the DB schema includes the column.
-            Tiket::create([
+            $ticketData = [
                 'nama_penumpang'  => $r->nama_penumpang[$i],
                 'nik'             => $r->nik[$i],
                 'id_pemesanan'    => $pemesanan->id,
                 'id_penerbangan'  => $flight->id,
                 'seat'            => $r->seat[$i],
-            ]);
+            ];
+
+            if (Schema::hasColumn('tiket', 'kelas')) {
+                $ticketData['kelas'] = $r->kelas[$i] ?? null;
+            }
+
+            Tiket::create($ticketData);
         }
 
         return redirect()->route('user.tiket.sukses')

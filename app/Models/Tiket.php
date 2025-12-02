@@ -14,6 +14,7 @@ class Tiket extends Model
         'id_pemesanan',
         'id_penerbangan',
         'seat',
+        'kelas',
     ];
 
     public function pemesanan()
