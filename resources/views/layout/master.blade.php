@@ -140,8 +140,8 @@
                           </a>
 
                           <ul class="dropdown-menu dropdown-menu-end">
-                              <li><a class="dropdown-item" href="/login">Login</a></li>
-                              <li><a class="dropdown-item" href="/register">Register</a></li>
+                              <li><a class="dropdown-item" href={{ route("login") }}>Login</a></li>
+                              <li><a class="dropdown-item" href={{ route("register") }}>Register</a></li>
                           </ul>
                       </li>
                   @endif
