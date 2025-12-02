@@ -26,17 +26,40 @@ class TravelsController extends Controller
             $dest = trim($request->destination);
 
             $query->where(function($q) use ($dest) {
-                $q->where('nama_maskapai', 'like', "%{$dest}%")
-                  ->orWhereHas('tujuan', function($qq) use ($dest) {
-                      $qq->where('kota', 'like', "%{$dest}%")
-                         ->orWhere('nama_bandara', 'like', "%{$dest}%")
-                         ->orWhere('kode_iata', 'like', "%{$dest}%");
-                  })
-                  ->orWhereHas('asal', function($qq) use ($dest) {
-                      $qq->where('kota', 'like', "%{$dest}%")
-                         ->orWhere('nama_bandara', 'like', "%{$dest}%")
-                         ->orWhere('kode_iata', 'like', "%{$dest}%");
-                  });
+                $hasNama = Schema::hasColumn('penerbangan', 'nama_maskapai');
+
+                if ($hasNama) {
+                    // If table still has nama_maskapai column, search there as well as related maskapai/bandara
+                    $q->where('nama_maskapai', 'like', "%{$dest}%")
+                      ->orWhereHas('maskapai', function($qq) use ($dest) {
+                          $qq->where('nama_maskapai', 'like', "%{$dest}%");
+                      })
+                      ->orWhereHas('tujuan', function($qq) use ($dest) {
+                          $qq->where('kota', 'like', "%{$dest}%")
+                             ->orWhere('nama_bandara', 'like', "%{$dest}%")
+                             ->orWhere('kode_iata', 'like', "%{$dest}%");
+                      })
+                      ->orWhereHas('asal', function($qq) use ($dest) {
+                          $qq->where('kota', 'like', "%{$dest}%")
+                             ->orWhere('nama_bandara', 'like', "%{$dest}%")
+                             ->orWhere('kode_iata', 'like', "%{$dest}%");
+                      });
+                } else {
+                    // Nama_maskapai removed: search only via related maskapai and bandara
+                    $q->whereHas('maskapai', function($qq) use ($dest) {
+                          $qq->where('nama_maskapai', 'like', "%{$dest}%");
+                      })
+                      ->orWhereHas('tujuan', function($qq) use ($dest) {
+                          $qq->where('kota', 'like', "%{$dest}%")
+                             ->orWhere('nama_bandara', 'like', "%{$dest}%")
+                             ->orWhere('kode_iata', 'like', "%{$dest}%");
+                      })
+                      ->orWhereHas('asal', function($qq) use ($dest) {
+                          $qq->where('kota', 'like', "%{$dest}%")
+                             ->orWhere('nama_bandara', 'like', "%{$dest}%")
+                             ->orWhere('kode_iata', 'like', "%{$dest}%");
+                      });
+                }
             });
         }
 
