@@ -21,12 +21,8 @@
         <div class="card shadow-sm">
           <div class="card-body">
             <h5 class="card-title">Cari Penerbangan</h5>
-<<<<<<< HEAD
             <form class="row g-2" action="{{ route('travels.store') }}" method="post">
               @csrf
-=======
-            <form class="row g-2" action="{{ url('/travels') }}" method="get">
->>>>>>> e5b7a928db64dbd57fde9fef74848eaa19a1908a
               <div class="col-12">
                 <input type="text" name="destination" class="form-control" placeholder="Destinasi" value="{{ request('destination') }}">
                 <div class="small text-muted mt-1">Tanggal berangkat</div>
@@ -132,9 +128,9 @@
                       </div>
 
                       <div style="margin-top: 4px; font-size: 17px; font-weight: bold;">
-                          {{ $f->bandaraAsal->kota }} ({{ $f->bandaraAsal->kode_iata }})
+                          {{ $f->asal->kota }} ({{ $f->asal->kode_iata }})
                           ↔
-                          {{ $f->bandaraTujuan->kota }} ({{ $f->bandaraTujuan->kode_iata }})
+                          {{ $f->tujuan->kota }} ({{ $f->tujuan->kode_iata }})
                       </div>
 
                       <div style="margin-top: 4px; color: #555;">

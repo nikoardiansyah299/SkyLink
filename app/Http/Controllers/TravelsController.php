@@ -2,54 +2,28 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
 use App\Models\Penerbangan;
-use App\Models\Bandara;
-use App\Models\Maskapai;
-=======
 use App\Models\PenerbanganModel;
 use App\Models\Bandara;
->>>>>>> e5b7a928db64dbd57fde9fef74848eaa19a1908a
+use App\Models\Maskapai;
 use Illuminate\Http\Request;
 
 class TravelsController extends Controller
 {
-<<<<<<< HEAD
-    public function index(Request $r)
+    /**
+     * ===========================
+     * INDEX (GABUNG FILTER & SEARCH)
+     * ===========================
+     */
+    public function index(Request $request)
     {
-        $kategori = $r->get('kategori');
-
-        $flights = Penerbangan::with(['bandaraAsal', 'bandaraTujuan', 'maskapai'])
-            ->get()
-            ->filter(function ($f) use ($kategori) {
-
-                if (!$kategori) return true; // tampilkan semua
-
-                $asal  = $f->bandaraAsal->negara;
-                $tujuan = $f->bandaraTujuan->negara;
-
-                if ($kategori === 'domestik') {
-                    return $asal === $tujuan;
-                }
-
-                if ($kategori === 'internasional') {
-                    return $asal !== $tujuan;
-                }
-
-                return true;
-            });
-
-        return view('travels.flights', [
-            'flights' => $flights,
-            'kategori' => $kategori
-        ]);
-=======
-    public function index(Request $request) {
+        // === BAGIAN DARI KODE TEMANMU (search + return flight) ===
         $query = PenerbanganModel::with(['asal', 'tujuan']);
 
-        // Search by destination (match maskapai or tujuan city/name/code)
-        if ($request->has('destination') && $request->destination !== null && trim($request->destination) !== '') {
+        // Search by destination / maskapai / bandara
+        if ($request->has('destination') && trim($request->destination) !== '') {
             $dest = trim($request->destination);
+
             $query->where(function($q) use ($dest) {
                 $q->where('nama_maskapai', 'like', "%{$dest}%")
                   ->orWhereHas('tujuan', function($qq) use ($dest) {
@@ -65,56 +39,94 @@ class TravelsController extends Controller
             });
         }
 
-        // Filter by departure date
+        // Filter tanggal keberangkatan
         if ($request->has('checkin') && $request->checkin) {
             $query->where('tanggal', $request->checkin);
         }
 
         $flights = $query->get();
 
-        // If return date provided, fetch return flights (same date = checkout)
+        // Return flight (jika ada checkout)
         $returnFlights = null;
         if ($request->has('checkout') && $request->checkout) {
-            $returnFlights = PenerbanganModel::with(['asal','tujuan'])->where('tanggal', $request->checkout)->get();
+            $returnFlights = PenerbanganModel::with(['asal','tujuan'])
+                        ->where('tanggal', $request->checkout)
+                        ->get();
         }
 
-        return view('/travels/flights', compact('flights', 'returnFlights'));
->>>>>>> e5b7a928db64dbd57fde9fef74848eaa19a1908a
+        // ============ BAGIAN DARI KODEMU (FILTER DOMESTIK/INTERNASIONAL) ============
+        $kategori = $request->get('kategori');
+
+        // Gunakan hasil flights yang sudah didapat dari query temanmu
+        $flights = $flights->filter(function ($f) use ($kategori) {
+            if (!$kategori) return true;
+
+            $asal = $f->asal->negara ?? null;
+            $tujuan = $f->tujuan->negara ?? null;
+
+            if ($kategori === 'domestik') {
+                return $asal === $tujuan;
+            }
+
+            if ($kategori === 'internasional') {
+                return $asal !== $tujuan;
+            }
+
+            return true;
+        });
+
+        return view('travels.flights', [
+            'flights'       => $flights,
+            'returnFlights' => $returnFlights,
+            'kategori'      => $kategori
+        ]);
     }
 
-    public function create(){
+    /**
+     * ===========================
+     * CREATE (GABUNG KEDUANYA)
+     * ===========================
+     */
+    public function create()
+    {
         $bandara = Bandara::all();
-<<<<<<< HEAD
-        $maskapai = Maskapai::all(); // ambil daftar maskapai
-        return view('/travels/create', compact('bandara', 'maskapai'));
-=======
-        return view('/travels/create', compact('bandara'));
->>>>>>> e5b7a928db64dbd57fde9fef74848eaa19a1908a
+        $maskapai = Maskapai::all(); // agar fitur kamu tetap jalan
+
+        // tetap pakai view kamu
+        return view('travels.create', compact('bandara', 'maskapai'));
     }
 
-    public function store(Request $r){
 
+
+    /**
+     * ===========================
+     * STORE (AMBIL DARI KODEMU)
+     * ===========================
+     */
+    public function store(Request $r)
+    {
         $r->validate([
-            'maskapai_id' => 'required|exists:maskapai,id',
-            'harga' => 'required|numeric',
-            'asal_id' => 'required',
-            'tujuan_id' => 'required',
-            'tanggal' => 'required|date',
+            'maskapai_id'   => 'required|exists:maskapai,id',
+            'harga'         => 'required|numeric',
+            'asal_id'       => 'required',
+            'tujuan_id'     => 'required',
+            'tanggal'       => 'required|date',
             'jam_berangkat' => 'required',
-            'jam_tiba' => 'required',
+            'jam_tiba'      => 'required',
         ]);
 
         Penerbangan::create([
-            'maskapai_id' => $r->maskapai_id,
-            'harga' => $r->harga,
-            'id_bandara_asal' => $r->asal_id,
-            'id_bandara_tujuan' => $r->tujuan_id,
-            'tanggal' => $r->tanggal,
-            'jam_berangkat' => $r->jam_berangkat,
-            'jam_tiba' => $r->jam_tiba,
+            'maskapai_id'        => $r->maskapai_id,
+            'harga'              => $r->harga,
+            'id_bandara_asal'    => $r->asal_id,
+            'id_bandara_tujuan'  => $r->tujuan_id,
+            'tanggal'            => $r->tanggal,
+            'jam_berangkat'      => $r->jam_berangkat,
+            'jam_tiba'           => $r->jam_tiba,
         ]);
 
-        return redirect()->route('travels.index')->with('success', 'Data penerbangan berhasil ditambahkan!');
+        return redirect()->route('travels.index')
+                         ->with('success', 'Data penerbangan berhasil ditambahkan!');
     }
 
 }
