@@ -7,6 +7,7 @@ use App\Models\PenerbanganModel;
 use App\Models\Bandara;
 use App\Models\Maskapai;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class TravelsController extends Controller
 {
@@ -115,15 +116,31 @@ class TravelsController extends Controller
             'jam_tiba'      => 'required',
         ]);
 
-        Penerbangan::create([
-            'maskapai_id'        => $r->maskapai_id,
-            'harga'              => $r->harga,
-            'id_bandara_asal'    => $r->asal_id,
-            'id_bandara_tujuan'  => $r->tujuan_id,
-            'tanggal'            => $r->tanggal,
-            'jam_berangkat'      => $r->jam_berangkat,
-            'jam_tiba'           => $r->jam_tiba,
-        ]);
+        // Some users may have migrated DB with / without maskapai_id column.
+        // Support both scenarios: if maskapai_id exists, store it directly; otherwise, store nama_maskapai and gambar columns.
+        if (Schema::hasColumn('penerbangan', 'maskapai_id')) {
+            Penerbangan::create([
+                'maskapai_id'        => $r->maskapai_id,
+                'harga'              => $r->harga,
+                'id_bandara_asal'    => $r->asal_id,
+                'id_bandara_tujuan'  => $r->tujuan_id,
+                'tanggal'            => $r->tanggal,
+                'jam_berangkat'      => $r->jam_berangkat,
+                'jam_tiba'           => $r->jam_tiba,
+            ]);
+        } else {
+            $maskapai = Maskapai::find($r->maskapai_id);
+            Penerbangan::create([
+                'nama_maskapai'      => $maskapai->nama_maskapai ?? 'Maskapai',
+                'gambar'             => $maskapai->logo ?? '/images/default-plane.png',
+                'harga'              => $r->harga,
+                'id_bandara_asal'    => $r->asal_id,
+                'id_bandara_tujuan'  => $r->tujuan_id,
+                'tanggal'            => $r->tanggal,
+                'jam_berangkat'      => $r->jam_berangkat,
+                'jam_tiba'           => $r->jam_tiba,
+            ]);
+        }
 
         return redirect()->route('travels.index')
                          ->with('success', 'Data penerbangan berhasil ditambahkan!');
