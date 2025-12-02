@@ -18,7 +18,7 @@
     <div class="card mb-4 shadow-sm">
         <div class="card-body d-flex justify-content-between align-items-center">
             <div>
-                <h5 class="fw-bold">{{ $flight->maskapai->nama_maskapai }}</h5>
+                <h5 class="fw-bold">{{ optional($flight->maskapai)->nama_maskapai ?? $flight->nama_maskapai ?? 'Maskapai' }}</h5>
                 <div>
                     {{ $flight->bandaraAsal->kota }} ({{ $flight->bandaraAsal->kode_iata }})
                     →
@@ -29,7 +29,7 @@
                     | {{ $flight->jam_berangkat }} - {{ $flight->jam_tiba }}
                 </small>
             </div>
-            <img src="{{ asset($flight->maskapai->logo) }}"
+                <img src="{{ asset(ltrim(optional($flight->maskapai)->logo ?? $flight->gambar ?? 'images/default-logo.png', '/')) }}"
                     alt="Logo Maskapai"
                     class="img-fluid"
                     style="height: 60px;">

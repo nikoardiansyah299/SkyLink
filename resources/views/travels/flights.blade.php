@@ -21,8 +21,7 @@
         <div class="card shadow-sm">
           <div class="card-body">
             <h5 class="card-title">Cari Penerbangan</h5>
-            <form class="row g-2" action="{{ route('travels.store') }}" method="post">
-              @csrf
+            <form class="row g-2" action="{{ route('travels.index') }}" method="get">
               <div class="col-12">
                 <input type="text" name="destination" class="form-control" placeholder="Destinasi" value="{{ request('destination') }}">
                 <div class="small text-muted mt-1">Tanggal berangkat</div>
@@ -118,13 +117,13 @@
 
               <!-- LOGO MASKAPAI -->
               <div style="display:flex; align-items:center; gap:15px;">
-                  <img src="{{ asset(ltrim($f->maskapai->logo, '/')) }}"
+                  <img src="{{ asset(ltrim(optional($f->maskapai)->logo ?? $f->gambar ?? 'images/default-logo.png', '/')) }}"
                     alt="logo"
                     style="width:55px; height:auto; border-radius:8px;">
 
                   <div>
                       <div style="font-size: 18px; font-weight: 600;">
-                          {{ $f->maskapai->nama_maskapai }}
+                          {{ optional($f->maskapai)->nama_maskapai ?? $f->nama_maskapai ?? 'Maskapai' }}
                       </div>
 
                       <div style="margin-top: 4px; font-size: 17px; font-weight: bold;">
@@ -179,7 +178,7 @@
 
           <div>
             <div style="font-size: 18px; font-weight: 600;">
-              {{ $f->nama_maskapai }}
+              {{ optional($f->maskapai)->nama_maskapai ?? $f->nama_maskapai ?? 'Maskapai' }}
             </div>
 
             <div style="margin-top: 4px; font-size: 17px; font-weight: bold;">
@@ -189,7 +188,7 @@
             </div>
 
             <div style="margin-top: 4px; color: #555;">
-              {{ \Carbon\Carbon::createFromFormat('Y-m-d', $f->tanggal)->locale('id')->isoFormat('dddd, D MMM YYYY') }}
+              {{ \Carbon\Carbon::parse($f->tanggal)->locale('id')->isoFormat('dddd, D MMM YYYY') }}
             </div>
           </div>
 

@@ -7,6 +7,7 @@ use App\Models\Penerbangan;
 use App\Models\Tiket;
 use App\Models\Pemesanan;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class TiketController extends Controller
 {
@@ -67,21 +68,30 @@ class TiketController extends Controller
         // dd($totalBayar);
 
         // === Buat pemesanan utama ===
-        $pemesanan = Pemesanan::create([
-            'id_users'        => auth()->id(),
+        // Note: some databases may not have a `total` column on `pemesanan`.
+        // To avoid SQL errors without changing the schema, don't include
+        // the `total` field when creating the record. If you prefer to
+        // persist total, add the column via migration.
+        $pemesananData = [
+            'id_users'        => \Auth::id(),
             'id_penerbangan'  => $flight->id,
             'kode'            => $this->generateUniqueCode(),
             'jumlah_tiket'    => $jumlahTiket,
-            'total'           => $totalBayar,
             'status'          => 'Pending',
-        ]);
+        ];
+
+        $pemesanan = Pemesanan::create($pemesananData);
 
         // === Simpan tiket per penumpang ===
         for ($i = 0; $i < count($r->nama_penumpang); $i++) {
+            // Some installations may not have a `kelas` column on `tiket`.
+            // To avoid SQL errors without changing the schema, do not
+            // include `kelas` in the insert. The booking form still
+            // collects a class selection for UX, but we won't persist it
+            // unless the DB schema includes the column.
             Tiket::create([
                 'nama_penumpang'  => $r->nama_penumpang[$i],
                 'nik'             => $r->nik[$i],
-                'kelas'           => $r->kelas[$i],
                 'id_pemesanan'    => $pemesanan->id,
                 'id_penerbangan'  => $flight->id,
                 'seat'            => $r->seat[$i],

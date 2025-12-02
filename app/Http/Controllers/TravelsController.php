@@ -18,7 +18,7 @@ class TravelsController extends Controller
     public function index(Request $request)
     {
         // === BAGIAN DARI KODE TEMANMU (search + return flight) ===
-        $query = PenerbanganModel::with(['asal', 'tujuan']);
+        $query = PenerbanganModel::with(['maskapai', 'asal', 'tujuan']);
 
         // Search by destination / maskapai / bandara
         if ($request->has('destination') && trim($request->destination) !== '') {
@@ -49,7 +49,7 @@ class TravelsController extends Controller
         // Return flight (jika ada checkout)
         $returnFlights = null;
         if ($request->has('checkout') && $request->checkout) {
-            $returnFlights = PenerbanganModel::with(['asal','tujuan'])
+            $returnFlights = PenerbanganModel::with(['maskapai', 'asal','tujuan'])
                         ->where('tanggal', $request->checkout)
                         ->get();
         }
@@ -100,7 +100,7 @@ class TravelsController extends Controller
 
     /**
      * ===========================
-     * STORE (AMBIL DARI KODEMU)
+     * STORE 
      * ===========================
      */
     public function store(Request $r)
