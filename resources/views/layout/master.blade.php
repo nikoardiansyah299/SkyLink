@@ -204,8 +204,8 @@
               <div class="col-md-3 mb-3 text-center">
                   <h6 class="fw-bold">Quick Links</h6>
                   <ul class="list-unstyled small">
-                      <li><a href="/login" class="text-light text-decoration-none">Login</a></li>
-                      <li><a href="/register" class="text-light text-decoration-none">Register</a></li>
+                      <li><a href="{{ route("login") }}" class="text-light text-decoration-none">Login</a></li>
+                      <li><a href="{{ route("register") }}" class="text-light text-decoration-none">Register</a></li>
                       <li><a href="/travels" class="text-light text-decoration-none">Available Travels</a></li>
                   </ul>
               </div>
