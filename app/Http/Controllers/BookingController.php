@@ -40,8 +40,8 @@ class BookingController extends Controller
 
             return [
                 'id' => $p->id,
-                'airline' => $p->penerbangan->nama_maskapai,
-                'airline_logo' => $p->penerbangan->gambar,
+                'airline' => optional($p->penerbangan->maskapai)->nama_maskapai ?? $p->penerbangan->nama_maskapai ?? 'Maskapai',
+                'airline_logo' => optional($p->penerbangan->maskapai)->logo ?? $p->penerbangan->gambar ?? '/images/default-plane.png',
                 'flight_number' => $p->id . '-' . str_pad($p->id_penerbangan, 4, '0', STR_PAD_LEFT),
                 'from' => $p->penerbangan->bandaraAsal->nama_bandara . ' (' . $p->penerbangan->bandaraAsal->kode_iata . ')',
                 'to' => $p->penerbangan->bandaraTujuan->nama_bandara . ' (' . $p->penerbangan->bandaraTujuan->kode_iata . ')',
@@ -173,7 +173,7 @@ class BookingController extends Controller
             ->map(function ($flight) use ($pemesanan) {
                 return [
                     'id' => $flight->id,
-                    'airline' => $flight->nama_maskapai,
+                    'airline' => optional($flight->maskapai)->nama_maskapai ?? $flight->nama_maskapai ?? 'Maskapai',
                     'date' => \Carbon\Carbon::parse($flight->tanggal)->locale('id')->translatedFormat('l, j F Y'),
                     'time' => \Carbon\Carbon::parse($flight->jam_berangkat)->format('H:i'),
                     'departure_time' => $flight->jam_berangkat,
@@ -215,7 +215,8 @@ class BookingController extends Controller
         $pemesanan->save();
 
         $localizedDate = \Carbon\Carbon::parse($newFlight->tanggal)->locale('id')->translatedFormat('l, j F Y');
-        $message = 'Pemesanan diperbarui ke ' . $newFlight->nama_maskapai . ' pada ' . $localizedDate . '.';
+        $airlineName = optional($newFlight->maskapai)->nama_maskapai ?? $newFlight->nama_maskapai ?? 'Maskapai';
+        $message = 'Pemesanan diperbarui ke ' . $airlineName . ' pada ' . $localizedDate . '.';
 
         return redirect()->route('bookings.index')
             ->with('success', $message);
