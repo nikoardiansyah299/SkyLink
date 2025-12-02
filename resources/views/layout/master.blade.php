@@ -113,7 +113,7 @@
                       <li class="nav-item"><a class="nav-link text-light" href="/bookings">My Bookings</a></li>
 
                       @if(Auth::user()->is_admin)
-                          <li class="nav-item"><a class="nav-link text-light" href="/travel/create">Manage Travels</a></li>
+                          <li class="nav-item"><a class="nav-link text-light" href="{{ route('travels.create') }}">Manage Travels</a></li>
                       @endif
 
                       <li class="nav-item dropdown">
@@ -153,6 +153,16 @@
 
   <!-- MAIN CONTENT -->
   <main>
+      {{-- Global flash messages --}}
+      <div class="container mt-3">
+          @if(session('success'))
+              <div class="alert alert-success">{{ session('success') }}</div>
+          @endif
+          @if(session('error'))
+              <div class="alert alert-danger">{{ session('error') }}</div>
+          @endif
+      </div>
+
       @yield('content')
   </main>
 

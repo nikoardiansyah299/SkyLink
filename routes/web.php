@@ -45,10 +45,14 @@ Route::middleware('auth')->group(function () {
     
     // travels
     Route::get('/travels', [TravelsController::class, 'index'])->name('travels.index');
-    Route::get('/create/flights', [TravelsController::class, 'create'])->name('travels.create')
-        ->middleware(\App\Http\Middleware\EnsureAdmin::class);
-    Route::post('/travels/store', [TravelsController::class, 'store'])->name('travels.store')
-        ->middleware(\App\Http\Middleware\EnsureAdmin::class);
+
+    // Create & store are admin only
+    Route::get('/create/flights', [TravelsController::class, 'create'])
+        ->name('travels.create')
+        ->middleware('admin');
+    Route::post('/travels/store', [TravelsController::class, 'store'])
+        ->name('travels.store')
+        ->middleware('admin');
 
     //tiket
     Route::get('/tiket/pesan/{id}', [TiketController::class, 'create'])->name('tiket.create');

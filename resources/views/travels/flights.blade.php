@@ -95,7 +95,7 @@
     <!-- JIKA ADMIN → TOMBOL TAMBAH -->
     @if(Auth::check() && Auth::user()->roles === 'admin')
     <div class="mb-3">
-        <a href="create/flights" class="btn btn-primary">+ Tambah Data Travel</a>
+      <a href="{{ route('travels.create') }}" class="btn btn-primary">+ Tambah Data Travel</a>
     </div>
     @endif
 

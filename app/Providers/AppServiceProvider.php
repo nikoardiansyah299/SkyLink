@@ -19,6 +19,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Register admin middleware alias if router available
+        if ($this->app->has('router')) {
+            $router = $this->app->get('router');
+            // aliasMiddleware method exists on Illuminate\Routing\Router
+            if (method_exists($router, 'aliasMiddleware')) {
+                $router->aliasMiddleware('admin', \App\Http\Middleware\EnsureAdmin::class);
+            }
+        }
     }
 }

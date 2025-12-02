@@ -37,7 +37,7 @@
                     <option value="">-- Pilih Bandara Asal --</option>
                     @foreach ($bandara as $b)
                         <option value="{{ $b->id }}">
-                            {{ $b->kota }} ({{ $b->kode_bandara }})
+                            {{ $b->kota }} ({{ $b->kode_iata }})
                         </option>
                     @endforeach
                 </select>
@@ -50,7 +50,7 @@
                     <option value="">-- Pilih Bandara Tujuan --</option>
                     @foreach ($bandara as $b)
                         <option value="{{ $b->id }}">
-                            {{ $b->kota }} ({{ $b->kode_bandara }})
+                            {{ $b->kota }} ({{ $b->kode_iata }})
                         </option>
                     @endforeach
                 </select>
