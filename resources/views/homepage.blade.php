@@ -20,9 +20,9 @@
       </div>
       <div class="col-lg-6 mt-4 mt-lg-0">
         <div class="card shadow-sm">
-          <div class="card-body">
+            <div class="card-body">
             <h5 class="card-title">Cari Penerbangan</h5>
-            <form class="row g-2" action="#" method="post">
+            <form class="row g-2" action="{{ url('/travels') }}" method="get">
               <div class="col-12">
                 <input type="text" name="destination" class="form-control" placeholder="Destinasi" required>
                 <div class="small text-muted mt-1">Tanggal berangkat</div>
@@ -32,7 +32,7 @@
                 <div class="small text-muted mt-1">Penumpang Dewasa</div>
               </div>
               <div class="col-md-6">
-                <input type="date" name="checkout" class="form-control" required>
+                <input type="date" name="checkout" class="form-control">
                 <div class="small text-muted mt-1">Anak-anak</div>
               </div>
               <div class="col-md-6">

@@ -1,5 +1,5 @@
 @extends('layout.master')
-@section('title', 'My Bookings | SkyLink')
+@section('title', 'Pesanan Saya | SkyLink')
 
 @section('content')
 
@@ -10,8 +10,8 @@
   <div class="container position-relative" style="z-index:2;">
     <div class="row align-items-center">
       <div class="col-lg-8">
-        <h1 class="display-5 fw-bold">My Bookings</h1>
-        <p class="lead">View and manage all your flight bookings in one place.</p>
+        <h1 class="display-5 fw-bold">Pesanan Saya</h1>
+        <p class="lead">Lihat dan kelola semua pemesanan penerbangan Anda di satu tempat.</p>
       </div>
     </div>
   </div>
@@ -33,19 +33,20 @@
 
 <div class="container my-5">
 
+
     <!-- NO BOOKINGS MESSAGE -->
     @if($bookings->isEmpty())
     <div class="alert alert-info text-center py-5" role="alert">
-        <h5 class="fw-bold mb-2">No bookings yet</h5>
-        <p class="text-muted mb-3">You haven't booked any flights yet. Start exploring and book your next adventure!</p>
-        <a href="{{ url('/travels') }}" class="btn btn-primary">Browse Flights</a>
+        <h5 class="fw-bold mb-2">Belum ada pemesanan</h5>
+        <p class="text-muted mb-3">Anda belum memesan penerbangan. Jelajahi penerbangan dan pesan perjalanan Anda sekarang!</p>
+        <a href="{{ url('/travels') }}" class="btn btn-primary">Jelajahi Penerbangan</a>
     </div>
     @else
 
     <!-- BOOKINGS LIST -->
     <div class="row g-4">
         @foreach ($bookings as $booking)
-        <div class="col-md-6 booking-item" data-status="{{ strtolower($booking['status']) }}">
+        <div class="col-md-6 booking-item" data-status="{{ strtolower($booking['status']) }}" data-booking-id="{{ $booking['id'] }}">
             <div class="booking-card p-4 rounded-4 shadow-sm border">
                 
                 <!-- HEADER: Airline & Status -->
@@ -60,7 +61,7 @@
                     
                     <!-- STATUS BADGE -->
                     <span class="badge bg-{{ $booking['status_badge'] }}">
-                        {{ ucfirst($booking['status']) }}
+                        {{ $booking['status_label'] ?? ucfirst($booking['status']) }}
                     </span>
                 </div>
 
@@ -71,19 +72,19 @@
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
                             <div class="fw-bold" style="font-size: 1.1rem;">{{ $booking['from'] }}</div>
-                            <div class="text-muted small">Departure</div>
+                            <div class="text-muted small">Keberangkatan</div>
                         </div>
                         <div class="text-center">
                             <i class="bi bi-arrow-right"></i>
                         </div>
                         <div class="text-end">
                             <div class="fw-bold" style="font-size: 1.1rem;">{{ $booking['to'] }}</div>
-                            <div class="text-muted small">Arrival</div>
+                            <div class="text-muted small">Kedatangan</div>
                         </div>
                     </div>
                     
                     <div class="small text-muted">
-                        <strong>Date:</strong> {{ $booking['departure_date'] }} at {{ $booking['departure_time'] }}
+                        <strong>Tanggal:</strong> {{ $booking['departure_date'] }} pukul {{ $booking['departure_time'] }}
                     </div>
                 </div>
 
@@ -92,11 +93,11 @@
                 <!-- PASSENGERS & SEATS -->
                 <div class="row g-2 mb-3 text-center">
                     <div class="col-6">
-                        <div class="small text-muted">Passengers</div>
+                        <div class="small text-muted">Penumpang</div>
                         <div class="fw-bold">{{ $booking['passengers'] }}</div>
                     </div>
                     <div class="col-6">
-                        <div class="small text-muted">Seat(s)</div>
+                        <div class="small text-muted">Kursi</div>
                         <div class="fw-bold">{{ $booking['seats'] }}</div>
                     </div>
                 </div>
@@ -106,11 +107,11 @@
                 <!-- BOOKING REFERENCE & PRICE -->
                 <div class="d-flex justify-content-between align-items-end mb-3">
                     <div>
-                        <div class="small text-muted">Booking Reference</div>
+                        <div class="small text-muted">Kode Pemesanan</div>
                         <div class="fw-bold text-primary">{{ $booking['reference_code'] }}</div>
                     </div>
                     <div class="text-end">
-                        <div class="small text-muted">Total Price</div>
+                        <div class="small text-muted">Total Harga</div>
                         <div class="fw-bold text-primary" style="font-size: 1.3rem;">Rp {{ number_format($booking['total_price'], 0, ',', '.') }}</div>
                     </div>
                 </div>
@@ -119,25 +120,104 @@
 
                 <!-- ACTIONS -->
                 <div class="d-flex gap-2">
-                    <a href="{{ url('/bookings/' . $booking['id']) }}" class="btn btn-sm btn-primary">View Details</a>
 
                     @if(Auth::check() && Auth::user()->roles === 'admin')
                         <!-- Admin: status change form -->
-                        <form action="{{ route('bookings.updateStatus', $booking['id']) }}" method="POST" class="d-flex ms-2">
+                        <form action="/bookings/{{ $booking['id'] }}/status" method="POST" class="d-flex ms-2">
                             @csrf
                             <select name="status" class="form-select form-select-sm me-2" style="min-width:130px;">
-                                <option value="pending" {{ $booking['status'] === 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="confirmed" {{ $booking['status'] === 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                                <option value="accepted">Accepted</option>
-                                <option value="cancelled" {{ $booking['status'] === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                <option value="pending" {{ $booking['status'] === 'pending' ? 'selected' : '' }}>Menunggu</option>
+                                <option value="confirmed" {{ $booking['status'] === 'confirmed' ? 'selected' : '' }}>Terkonfirmasi</option>
+                                <option value="cancelled" {{ $booking['status'] === 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
                             </select>
                             <button type="submit" class="btn btn-sm btn-success">Save</button>
                         </form>
                     @else
                         @if($booking['status'] === 'pending')
-                            <a href="{{ url('/bookings/' . $booking['id'] . '/cancel') }}" class="btn btn-sm btn-outline-danger">Cancel</a>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    Batalkan
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><span class="dropdown-item-text small">Batalkan pemesanan ini?</span></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form action="/bookings/{{ $booking['id'] }}/cancel" method="POST" class="w-100">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item text-danger">Ya, Batalkan</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         @elseif($booking['status'] === 'confirmed')
-                            <a href="{{ url('/bookings/' . $booking['id'] . '/modify') }}" class="btn btn-sm btn-outline-warning">Modify</a>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-warning dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    Ubah
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 280px; max-height: 400px; overflow-y: auto;">
+                                    <li class="dropdown-header">Pilih Penerbangan Lain</li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li id="altFlightsContainer{{ $booking['id'] }}">
+                                        <div class="text-center text-muted py-2">
+                                            <small>Memuat...</small>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <script>
+                                document.addEventListener('shown.bs.dropdown', function(e) {
+                                    if (e.target.classList.contains('dropdown-toggle') && e.target.textContent.includes('Ubah')) {
+                                        const container = document.getElementById('altFlightsContainer{{ $booking['id'] }}');
+                                        if (container.dataset.loaded) return;
+                                        
+                                        fetch(`/bookings/{{ $booking['id'] }}/alternatives`)
+                                            .then(r => r.json())
+                                            .then(flights => {
+                                                if (!flights || flights.length === 0) {
+                                                    container.innerHTML = '<div class="small text-muted p-2">Tidak ada alternatif</div>';
+                                                    return;
+                                                }
+                                                let html = '';
+                                                flights.forEach(f => {
+                                                    html += `
+                                                        <form action="/bookings/{{ $booking['id'] }}/change-flight" method="POST" style="display:inline;">
+                                                            @csrf
+                                                            <input type="hidden" name="flight_id" value="${f.id}">
+                                                            <button type="submit" class="dropdown-item" style="text-align: left;">
+                                                                <div class="fw-semibold small">${f.airline}</div>
+                                                                <small class="text-muted">${f.date} - ${f.time}</small><br>
+                                                                <small class="text-primary">Rp ${Number(f.total_price).toLocaleString('id-ID')}</small>
+                                                            </button>
+                                                        </form>
+                                                    `;
+                                                });
+                                                container.innerHTML = html;
+                                                container.dataset.loaded = 'true';
+                                            })
+                                            .catch(e => {
+                                                container.innerHTML = '<div class="small text-danger p-2">Gagal memuat</div>';
+                                            });
+                                    }
+                                });
+                            </script>
+                        @endif
+
+                        @if($booking['status'] === 'cancelled')
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-danger dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    Hapus
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><span class="dropdown-item-text small">Hapus pemesanan ini?</span></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form action="/bookings/{{ $booking['id'] }}/delete" method="POST" class="w-100">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item text-danger">Ya, Hapus</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         @endif
                     @endif
                 </div>
@@ -204,25 +284,19 @@
 </style>
 
 <script>
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Update active button
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
+    // Display flash messages from session
+    document.addEventListener('DOMContentLoaded', function() {
+        @if ($message = Session::get('success'))
+            showAlert('{{ $message }}', 'success');
+        @endif
 
-            const status = this.getAttribute('data-status');
-            const bookings = document.querySelectorAll('.booking-item');
+        @if ($message = Session::get('error'))
+            showAlert('{{ $message }}', 'danger');
+        @endif
 
-            bookings.forEach(booking => {
-                if (status === 'all' || booking.getAttribute('data-status') === status) {
-                    booking.style.display = 'block';
-                    setTimeout(() => booking.style.opacity = '1', 10);
-                } else {
-                    booking.style.opacity = '0';
-                    setTimeout(() => booking.style.display = 'none', 300);
-                }
-            });
-        });
+        @if ($message = Session::get('info'))
+            showAlert('{{ $message }}', 'info');
+        @endif
     });
 </script>
 

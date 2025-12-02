@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pemesanan;
+use App\Models\Penerbangan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -21,10 +23,21 @@ class BookingController extends Controller
             $pemesanan = $query->where('id_users', Auth::id())->get();
         }
 
-        // Transform database records to match view format
+        // Transform database records to match view format (localized to Indonesian)
         $bookings = $pemesanan->map(function ($p) {
             $seats = $p->tiket->pluck('seat')->implode(', ');
-            
+
+            $departureDate = \Carbon\Carbon::parse($p->penerbangan->tanggal)->locale('id')->translatedFormat('l, j F Y');
+            $departureTime = \Carbon\Carbon::parse($p->penerbangan->jam_berangkat)->format('H:i');
+
+            $status = strtolower($p->status);
+            $statusLabels = [
+                'pending' => 'Menunggu',
+                'confirmed' => 'Terkonfirmasi',
+                'completed' => 'Selesai',
+                'cancelled' => 'Dibatalkan',
+            ];
+
             return [
                 'id' => $p->id,
                 'airline' => $p->penerbangan->nama_maskapai,
@@ -32,14 +45,15 @@ class BookingController extends Controller
                 'flight_number' => $p->id . '-' . str_pad($p->id_penerbangan, 4, '0', STR_PAD_LEFT),
                 'from' => $p->penerbangan->bandaraAsal->nama_bandara . ' (' . $p->penerbangan->bandaraAsal->kode_iata . ')',
                 'to' => $p->penerbangan->bandaraTujuan->nama_bandara . ' (' . $p->penerbangan->bandaraTujuan->kode_iata . ')',
-                'departure_date' => \Carbon\Carbon::parse($p->penerbangan->tanggal)->format('D, j M Y'),
-                'departure_time' => \Carbon\Carbon::parse($p->penerbangan->jam_berangkat)->format('h:i A'),
+                'departure_date' => $departureDate,
+                'departure_time' => $departureTime,
                 'passengers' => $p->jumlah_tiket,
                 'seats' => $seats ?: 'N/A',
                 'reference_code' => $p->kode,
                 'total_price' => $p->penerbangan->harga * $p->jumlah_tiket,
-                'status' => strtolower($p->status),
-                'status_badge' => $this->getStatusBadge(strtolower($p->status)),
+                'status' => $status,
+                'status_label' => $statusLabels[$status] ?? ucfirst($status),
+                'status_badge' => $this->getStatusBadge($status),
             ];
         });
 
@@ -74,14 +88,14 @@ class BookingController extends Controller
         ];
 
         if (! array_key_exists($statusInput, $map)) {
-            return redirect()->back()->with('error', 'Invalid status');
+            return redirect()->back()->with('error', 'Status tidak valid');
         }
 
         $p = Pemesanan::findOrFail($id);
         $p->status = $map[$statusInput];
         $p->save();
 
-        return redirect()->back()->with('success', 'Booking status updated.');
+        return redirect()->back()->with('success', 'Status pemesanan diperbarui.');
     }
 
     /**
@@ -111,20 +125,125 @@ class BookingController extends Controller
     }
 
     /**
-     * Cancel booking
+     * Cancel booking (client only)
      */
-    public function cancel($id)
+    public function cancel(Request $request, $id)
     {
-        // Handle cancellation logic
-        return redirect()->route('bookings.index')->with('success', 'Booking cancelled successfully.');
+        $pemesanan = Pemesanan::findOrFail($id);
+
+        // Authorization: user can only cancel their own booking
+        if ($pemesanan->id_users !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Only pending bookings can be cancelled
+        if (strtolower($pemesanan->status) !== 'pending') {
+            return redirect()->route('bookings.index')
+                ->with('error', 'Hanya pemesanan yang berstatus Menunggu yang dapat dibatalkan.');
+        }
+
+        $pemesanan->status = 'Cancelled';
+        $pemesanan->save();
+
+        return redirect()->route('bookings.index')
+            ->with('success', 'Pemesanan berhasil dibatalkan.');
     }
 
     /**
-     * Modify booking
+     * Get alternative flights with same route but different dates (for client modify)
      */
-    public function modify($id)
+    public function getAlternativeFlights($id)
     {
-        // Handle modification logic
-        return redirect()->route('bookings.index')->with('info', 'Booking modification in progress.');
+        $pemesanan = Pemesanan::findOrFail($id);
+
+        // Authorization
+        if ($pemesanan->id_users !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Get the original flight's route
+        $originalFlight = $pemesanan->penerbangan;
+        
+        // Find other flights with same route (same origin and destination airports)
+        $alternatives = Penerbangan::where('id_bandara_asal', $originalFlight->id_bandara_asal)
+            ->where('id_bandara_tujuan', $originalFlight->id_bandara_tujuan)
+            ->where('id', '!=', $originalFlight->id) // Exclude the current booking
+            ->with(['bandaraAsal', 'bandaraTujuan'])
+            ->get()
+            ->map(function ($flight) use ($pemesanan) {
+                return [
+                    'id' => $flight->id,
+                    'airline' => $flight->nama_maskapai,
+                    'date' => \Carbon\Carbon::parse($flight->tanggal)->locale('id')->translatedFormat('l, j F Y'),
+                    'time' => \Carbon\Carbon::parse($flight->jam_berangkat)->format('H:i'),
+                    'departure_time' => $flight->jam_berangkat,
+                    'arrival_time' => \Carbon\Carbon::parse($flight->jam_tiba)->format('H:i'),
+                    'price' => $flight->harga,
+                    'total_price' => $flight->harga * $pemesanan->jumlah_tiket,
+                ];
+            });
+
+        return response()->json($alternatives);
+    }
+
+    /**
+     * Change booking to a different flight (same route, different date)
+     */
+    public function changeToFlight(Request $request, $id)
+    {
+        $pemesanan = Pemesanan::findOrFail($id);
+
+        // Authorization
+        if ($pemesanan->id_users !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $request->validate([
+            'flight_id' => 'required|integer|exists:penerbangan,id',
+        ]);
+
+        $newFlight = Penerbangan::findOrFail($request->flight_id);
+        $originalFlight = $pemesanan->penerbangan;
+
+        // Verify new flight is same route as original
+        if ($newFlight->id_bandara_asal !== $originalFlight->id_bandara_asal ||
+            $newFlight->id_bandara_tujuan !== $originalFlight->id_bandara_tujuan) {
+            return redirect()->back()->with('error', 'Penerbangan terpilih tidak pada rute yang sama.');
+        }
+
+        $pemesanan->id_penerbangan = $newFlight->id;
+        $pemesanan->save();
+
+        $localizedDate = \Carbon\Carbon::parse($newFlight->tanggal)->locale('id')->translatedFormat('l, j F Y');
+        $message = 'Pemesanan diperbarui ke ' . $newFlight->nama_maskapai . ' pada ' . $localizedDate . '.';
+
+        return redirect()->route('bookings.index')
+            ->with('success', $message);
+    }
+
+    /**
+     * Delete a booking (owner or admin).
+     */
+    public function destroy(Request $request, $id)
+    {
+        $pemesanan = Pemesanan::with('tiket')->findOrFail($id);
+
+        $user = Auth::user();
+
+        // Allow owner or admin to delete
+        if (! $user || ($user->roles !== 'admin' && $pemesanan->id_users !== $user->id)) {
+            abort(403, 'Unauthorized');
+        }
+
+        DB::transaction(function () use ($pemesanan) {
+            // Delete related tickets first (if relation exists)
+            if (method_exists($pemesanan, 'tiket')) {
+                $pemesanan->tiket()->delete();
+            }
+
+            $pemesanan->delete();
+        });
+
+        return redirect()->route('bookings.index')->with('success', 'Pemesanan berhasil dihapus.');
     }
 }
