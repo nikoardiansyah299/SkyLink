@@ -8,9 +8,9 @@ use App\Http\Controllers\TravelsController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\TiketController;
 
-Route::get('/', function () {
+Route::get('/home', function () {
     return view('homepage');
-})->name('home');
+});
 Route::get('/profile', function () {
     return view('profile');
 }); 
