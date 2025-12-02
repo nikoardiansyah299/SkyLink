@@ -17,18 +17,20 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        User::firstOrCreate([
+            'email' => 'test@travelid.com'
+        ], [
             'name' => 'Test User',
-            'email' => 'test@travelid.com',
             'username' => 'testuser',
             'roles' => 'client',
             'password' => \Illuminate\Support\Facades\Hash::make('password123'),
         ]);
 
-        // Additional test user
-        User::create([
+        // Additional test user (admin)
+        User::firstOrCreate([
+            'email' => 'admin@travelid.com'
+        ], [
             'name' => 'Admin User',
-            'email' => 'admin@travelid.com',
             'username' => 'admin',
             'roles' => 'admin',
             'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
@@ -37,6 +39,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             MaskapaiSeeder::class,
             BandaraSeeder::class,
+            FeaturedFlightsSeeder::class,
         ]);
     }
 }
