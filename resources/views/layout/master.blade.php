@@ -108,9 +108,9 @@
               <ul class="navbar-nav ms-auto">
 
                   @if(Auth::check())
-                      <li class="nav-item"><a class="nav-link text-light" href="/">Dashboard</a></li>
-                      <li class="nav-item"><a class="nav-link text-light" href="/travels">Travels</a></li>
-                      <li class="nav-item"><a class="nav-link text-light" href="/bookings">My Bookings</a></li>
+                      <li class="nav-item"><a class="nav-link text-light" href="{{ url("/home") }}">Dashboard</a></li>
+                      <li class="nav-item"><a class="nav-link text-light" href="{{ url("/travels") }}">Travels</a></li>
+                      <li class="nav-item"><a class="nav-link text-light" href="{{ url("/bookings") }}">My Bookings</a></li>
 
                       @if(Auth::user()->is_admin)
                           <li class="nav-item"><a class="nav-link text-light" href="{{ route('travels.create') }}">Manage Travels</a></li>
@@ -122,7 +122,7 @@
                           </a>
 
                           <ul class="dropdown-menu dropdown-menu-end">
-                              <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                              <li><a class="dropdown-item" href="{{ url("/profile") }}">Profile</a></li>
                               <li><hr class="dropdown-divider"></li>
                               <li>
                                   <form method="POST" action="{{ route('logout') }}">
