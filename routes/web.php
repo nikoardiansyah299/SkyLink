@@ -45,8 +45,10 @@ Route::middleware('auth')->group(function () {
     
     // travels
     Route::get('/travels', [TravelsController::class, 'index'])->name('travels.index');
-    Route::get('/create/flights', [TravelsController::class, 'create'])->name('travels.create');
-    Route::post('/travels/store', [TravelsController::class, 'store'])->name('travels.store');
+    Route::get('/create/flights', [TravelsController::class, 'create'])->name('travels.create')
+        ->middleware(\App\Http\Middleware\EnsureAdmin::class);
+    Route::post('/travels/store', [TravelsController::class, 'store'])->name('travels.store')
+        ->middleware(\App\Http\Middleware\EnsureAdmin::class);
 
     //tiket
     Route::get('/tiket/pesan/{id}', [TiketController::class, 'create'])->name('tiket.create');
