@@ -120,11 +120,10 @@
 
                 <!-- ACTIONS -->
                 <div class="d-flex gap-2">
-                    <a href="{{ url('/bookings/' . $booking['id']) }}" class="btn btn-sm btn-primary">Lihat Detail</a>
 
                     @if(Auth::check() && Auth::user()->roles === 'admin')
                         <!-- Admin: status change form -->
-                        <form action="{{ route('bookings.updateStatus', $booking['id']) }}" method="POST" class="d-flex ms-2">
+                        <form action="/bookings/{{ $booking['id'] }}/status" method="POST" class="d-flex ms-2">
                             @csrf
                             <select name="status" class="form-select form-select-sm me-2" style="min-width:130px;">
                                 <option value="pending" {{ $booking['status'] === 'pending' ? 'selected' : '' }}>Menunggu</option>
@@ -136,26 +135,89 @@
                     @else
                         @if($booking['status'] === 'pending')
                             <div class="dropdown">
-                                <button class="btn btn-sm btn-outline-danger dropdown-toggle" type="button" id="actionsDropdown{{ $booking['id'] }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Aksi
+                                <button class="btn btn-sm btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    Batalkan
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="actionsDropdown{{ $booking['id'] }}">
-                                    <li><a class="dropdown-item text-danger" href="#" onclick="ajaxCancel({{ $booking['id'] }}, this); return false;">Batalkan Pemesanan</a></li>
+                                <ul class="dropdown-menu">
+                                    <li><span class="dropdown-item-text small">Batalkan pemesanan ini?</span></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form action="/bookings/{{ $booking['id'] }}/cancel" method="POST" class="w-100">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item text-danger">Ya, Batalkan</button>
+                                        </form>
+                                    </li>
                                 </ul>
                             </div>
                         @elseif($booking['status'] === 'confirmed')
                             <div class="dropdown">
-                                <button class="btn btn-sm btn-outline-warning dropdown-toggle" type="button" id="modifyDropdown{{ $booking['id'] }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn btn-sm btn-outline-warning dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                     Ubah
                                 </button>
-                                <ul class="dropdown-menu p-2" style="min-width:320px;" aria-labelledby="modifyDropdown{{ $booking['id'] }}" id="alternativeDropdown{{ $booking['id'] }}">
-                                    <li class="text-center small text-muted py-2">Buka untuk memuat alternatif</li>
+                                <ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 280px; max-height: 400px; overflow-y: auto;">
+                                    <li class="dropdown-header">Pilih Penerbangan Lain</li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li id="altFlightsContainer{{ $booking['id'] }}">
+                                        <div class="text-center text-muted py-2">
+                                            <small>Memuat...</small>
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
+                            <script>
+                                document.addEventListener('shown.bs.dropdown', function(e) {
+                                    if (e.target.classList.contains('dropdown-toggle') && e.target.textContent.includes('Ubah')) {
+                                        const container = document.getElementById('altFlightsContainer{{ $booking['id'] }}');
+                                        if (container.dataset.loaded) return;
+                                        
+                                        fetch(`/bookings/{{ $booking['id'] }}/alternatives`)
+                                            .then(r => r.json())
+                                            .then(flights => {
+                                                if (!flights || flights.length === 0) {
+                                                    container.innerHTML = '<div class="small text-muted p-2">Tidak ada alternatif</div>';
+                                                    return;
+                                                }
+                                                let html = '';
+                                                flights.forEach(f => {
+                                                    html += `
+                                                        <form action="/bookings/{{ $booking['id'] }}/change-flight" method="POST" style="display:inline;">
+                                                            @csrf
+                                                            <input type="hidden" name="flight_id" value="${f.id}">
+                                                            <button type="submit" class="dropdown-item" style="text-align: left;">
+                                                                <div class="fw-semibold small">${f.airline}</div>
+                                                                <small class="text-muted">${f.date} - ${f.time}</small><br>
+                                                                <small class="text-primary">Rp ${Number(f.total_price).toLocaleString('id-ID')}</small>
+                                                            </button>
+                                                        </form>
+                                                    `;
+                                                });
+                                                container.innerHTML = html;
+                                                container.dataset.loaded = 'true';
+                                            })
+                                            .catch(e => {
+                                                container.innerHTML = '<div class="small text-danger p-2">Gagal memuat</div>';
+                                            });
+                                    }
+                                });
+                            </script>
                         @endif
 
                         @if($booking['status'] === 'cancelled')
-                            <button type="button" class="btn btn-sm btn-danger" onclick="ajaxDelete({{ $booking['id'] }}, this)">Hapus</button>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-danger dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    Hapus
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><span class="dropdown-item-text small">Hapus pemesanan ini?</span></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form action="/bookings/{{ $booking['id'] }}/delete" method="POST" class="w-100">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item text-danger">Ya, Hapus</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         @endif
                     @endif
                 </div>
@@ -235,242 +297,6 @@
         @if ($message = Session::get('info'))
             showAlert('{{ $message }}', 'info');
         @endif
-    });
-
-    // showAlert is provided globally by the master layout (`showAlert(message, type)`).
-
-    // Load alternative flights into dropdown menu when user opens it
-    function loadAlternativesIntoDropdown(bookingId, menuEl) {
-        if (!menuEl) return;
-        if (menuEl.dataset.loaded) return; // only load once
-
-        menuEl.innerHTML = '<li class="text-center py-2"><div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Memuat...</span></div> Memuat...</li>';
-
-        fetch(`/bookings/${bookingId}/alternatives`)
-            .then(response => response.json())
-            .then(flights => {
-                if (!flights || flights.length === 0) {
-                    menuEl.innerHTML = '<li class="px-3"><div class="text-muted small">No alternative flights available for this route.</div></li>';
-                    menuEl.dataset.loaded = 'true';
-                    return;
-                }
-
-                let html = '';
-                flights.forEach(flight => {
-                    html += `
-                        <li class="dropdown-item">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <div class="fw-semibold">${flight.airline}</div>
-                                    <div class="small text-muted">${flight.date} pukul ${flight.time} — tiba ${flight.arrival_time}</div>
-                                    <div class="small text-primary fw-bold">Rp ${Number(flight.total_price).toLocaleString('id-ID')}</div>
-                                </div>
-                                <div>
-                                    <button class="btn btn-sm btn-success ms-2" onclick="ajaxChangeFlight(${bookingId}, ${flight.id}, this)">Select</button>
-                                </div>
-                            </div>
-                        </li>
-                    `;
-                });
-
-                menuEl.innerHTML = html;
-                menuEl.dataset.loaded = 'true';
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                menuEl.innerHTML = '<li class="px-3"><div class="alert alert-danger mb-0">Failed to load flights.</div></li>';
-            });
-    }
-
-    // AJAX: Cancel booking
-    function ajaxCancel(bookingId, btn) {
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const url = `/bookings/${bookingId}/cancel`;
-
-        // Disable button to prevent duplicate clicks
-        btn.disabled = true;
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': token,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({})
-        }).then(r => r.json())
-        .then(data => {
-            if (data && data.success) {
-                // Update UI in-place: mark booking cancelled and show Delete button
-                const card = document.querySelector(`.booking-item[data-booking-id='${bookingId}']`);
-                if (card) {
-                    card.setAttribute('data-status', 'cancelled');
-                    // update badge
-                    const badge = card.querySelector('.badge');
-                    if (badge) {
-                        badge.classList.remove('bg-pending', 'bg-confirmed', 'bg-completed', 'bg-cancelled');
-                        badge.classList.add('bg-cancelled');
-                        badge.textContent = 'Cancelled';
-                    }
-
-                    // replace action area: remove dropdowns and add Delete button
-                    const actions = card.querySelector('.d-flex.gap-2');
-                    if (actions) {
-                        // keep View Details button if present
-                        const viewBtn = actions.querySelector('a.btn');
-                        actions.innerHTML = '';
-                        if (viewBtn) actions.appendChild(viewBtn);
-                        const del = document.createElement('button');
-                        del.className = 'btn btn-sm btn-danger ms-2';
-                        del.textContent = 'Delete';
-                        del.onclick = function(e){ ajaxDelete(bookingId, del); };
-                        actions.appendChild(del);
-                    }
-                }
-
-                showAlert('Pemesanan dibatalkan', 'success');
-            } else {
-                showAlert((data && data.message) ? data.message : 'Gagal membatalkan pemesanan', 'danger');
-                btn.disabled = false;
-            }
-        }).catch(err => {
-            console.error(err);
-            showAlert('Gagal membatalkan pemesanan', 'danger');
-            btn.disabled = false;
-        });
-    }
-
-    // AJAX: Change booking to selected flight
-    function ajaxChangeFlight(bookingId, flightId, btn) {
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const url = `/bookings/${bookingId}/change-flight`;
-        btn.disabled = true;
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': token,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ flight_id: flightId })
-        }).then(r => r.json())
-        .then(data => {
-            if (data && data.success) {
-                showAlert(data.message || 'Pemesanan diperbarui', 'success');
-                // reload to reflect updated flight details
-                setTimeout(() => location.reload(), 700);
-            } else {
-                showAlert((data && data.message) ? data.message : 'Gagal mengubah penerbangan', 'danger');
-                btn.disabled = false;
-            }
-        }).catch(err => {
-            console.error(err);
-            showAlert('Gagal mengubah penerbangan', 'danger');
-            btn.disabled = false;
-        });
-    }
-
-    // AJAX: Delete cancelled booking
-    function ajaxDelete(bookingId, btn) {
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const url = `/bookings/${bookingId}/delete`;
-        if (btn) btn.disabled = true;
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': token,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({})
-        }).then(r => r.json())
-        .then(data => {
-            if (data && data.success) {
-                const card = document.querySelector(`.booking-item[data-booking-id='${bookingId}']`);
-                if (card && card.parentElement) {
-                    card.parentElement.removeChild(card);
-                }
-                showAlert('Pemesanan dihapus', 'success');
-            } else {
-                showAlert((data && data.message) ? data.message : 'Gagal menghapus pemesanan', 'danger');
-                if (btn) btn.disabled = false;
-            }
-        }).catch(err => {
-            console.error(err);
-            showAlert('Gagal menghapus pemesanan', 'danger');
-            if (btn) btn.disabled = false;
-        });
-    }
-
-    // AJAX: Admin status update handler - intercept forms
-    document.addEventListener('submit', function(e) {
-        const form = e.target;
-        if (form && form.action && form.action.indexOf('/bookings/') !== -1 && form.action.indexOf('/status') !== -1) {
-            e.preventDefault();
-            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            const url = form.action;
-            const formData = new FormData(form);
-            const body = {};
-            formData.forEach((v,k) => body[k]=v);
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': token,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(body)
-            }).then(r => r.json())
-            .then(data => {
-                if (data && data.success) {
-                    showAlert('Status diperbarui', 'success');
-                    setTimeout(() => location.reload(), 700);
-                } else {
-                    showAlert('Gagal memperbarui status', 'danger');
-                }
-            }).catch(err => {
-                console.error(err);
-                showAlert('Gagal memperbarui status', 'danger');
-            });
-        }
-    });
-
-    // Listen for Bootstrap dropdown show events to lazy-load alternatives
-    document.addEventListener('show.bs.dropdown', function (e) {
-        const trigger = e.target; // .dropdown element
-        // find the dropdown toggle id like modifyDropdown{ID}
-        const toggle = e.relatedTarget || e.target.querySelector('[data-bs-toggle="dropdown"]');
-        if (!toggle) return;
-        const idAttr = toggle.id || '';
-        if (idAttr.indexOf('modifyDropdown') === 0) {
-            const bookingId = idAttr.replace('modifyDropdown', '');
-            const menuEl = document.getElementById('alternativeDropdown' + bookingId);
-            loadAlternativesIntoDropdown(bookingId, menuEl);
-        }
-    });
-
-    // Filter functionality
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-
-            const status = this.getAttribute('data-status');
-            const bookings = document.querySelectorAll('.booking-item');
-
-            bookings.forEach(booking => {
-                if (status === 'all' || booking.getAttribute('data-status') === status) {
-                    booking.style.display = 'block';
-                    setTimeout(() => booking.style.opacity = '1', 10);
-                } else {
-                    booking.style.opacity = '0';
-                    setTimeout(() => booking.style.display = 'none', 300);
-                }
-            });
-        });
     });
 </script>
 

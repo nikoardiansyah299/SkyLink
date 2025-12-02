@@ -95,10 +95,6 @@ class BookingController extends Controller
         $p->status = $map[$statusInput];
         $p->save();
 
-        if ($request->wantsJson()) {
-            return response()->json(['success' => true, 'status' => $map[$statusInput]]);
-        }
-
         return redirect()->back()->with('success', 'Status pemesanan diperbarui.');
     }
 
@@ -148,10 +144,6 @@ class BookingController extends Controller
 
         $pemesanan->status = 'Cancelled';
         $pemesanan->save();
-
-        if ($request->wantsJson()) {
-            return response()->json(['success' => true, 'status' => 'Cancelled']);
-        }
 
         return redirect()->route('bookings.index')
             ->with('success', 'Pemesanan berhasil dibatalkan.');
@@ -216,7 +208,7 @@ class BookingController extends Controller
         // Verify new flight is same route as original
         if ($newFlight->id_bandara_asal !== $originalFlight->id_bandara_asal ||
             $newFlight->id_bandara_tujuan !== $originalFlight->id_bandara_tujuan) {
-            return redirect()->back()->with('error', 'Selected flight is not on the same route.');
+            return redirect()->back()->with('error', 'Penerbangan terpilih tidak pada rute yang sama.');
         }
 
         $pemesanan->id_penerbangan = $newFlight->id;
@@ -224,10 +216,6 @@ class BookingController extends Controller
 
         $localizedDate = \Carbon\Carbon::parse($newFlight->tanggal)->locale('id')->translatedFormat('l, j F Y');
         $message = 'Pemesanan diperbarui ke ' . $newFlight->nama_maskapai . ' pada ' . $localizedDate . '.';
-
-        if ($request->wantsJson()) {
-            return response()->json(['success' => true, 'message' => $message, 'status' => $pemesanan->status]);
-        }
 
         return redirect()->route('bookings.index')
             ->with('success', $message);
@@ -255,10 +243,6 @@ class BookingController extends Controller
 
             $pemesanan->delete();
         });
-
-        if ($request->wantsJson()) {
-            return response()->json(['success' => true]);
-        }
 
         return redirect()->route('bookings.index')->with('success', 'Pemesanan berhasil dihapus.');
     }
