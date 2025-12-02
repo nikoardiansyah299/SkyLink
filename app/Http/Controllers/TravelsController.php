@@ -2,45 +2,72 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PenerbanganModel;
-use App\Models\BandaraModel;
+use App\Models\Penerbangan;
+use App\Models\Bandara;
+use App\Models\Maskapai;
 use Illuminate\Http\Request;
 
 class TravelsController extends Controller
 {
-    public function index() {
-        $flights = PenerbanganModel::with(['asal', 'tujuan'])->get();
-        // return $flights;
-        return view('/travels/flights', compact('flights'));
+    public function index(Request $r)
+    {
+        $kategori = $r->get('kategori');
+
+        $flights = Penerbangan::with(['bandaraAsal', 'bandaraTujuan', 'maskapai'])
+            ->get()
+            ->filter(function ($f) use ($kategori) {
+
+                if (!$kategori) return true; // tampilkan semua
+
+                $asal  = $f->bandaraAsal->negara;
+                $tujuan = $f->bandaraTujuan->negara;
+
+                if ($kategori === 'domestik') {
+                    return $asal === $tujuan;
+                }
+
+                if ($kategori === 'internasional') {
+                    return $asal !== $tujuan;
+                }
+
+                return true;
+            });
+
+        return view('travels.flights', [
+            'flights' => $flights,
+            'kategori' => $kategori
+        ]);
     }
 
     public function create(){
-        $bandara = BandaraModel::all();
-        return view('/travels/create', compact('bandara'));
+        $bandara = Bandara::all();
+        $maskapai = Maskapai::all(); // ambil daftar maskapai
+        return view('/travels/create', compact('bandara', 'maskapai'));
     }
 
     public function store(Request $r){
 
         $r->validate([
-            'maskapai' => 'required',
+            'maskapai_id' => 'required|exists:maskapai,id',
             'harga' => 'required|numeric',
             'asal_id' => 'required',
             'tujuan_id' => 'required',
             'tanggal' => 'required|date',
+            'jam_berangkat' => 'required',
+            'jam_tiba' => 'required',
         ]);
 
-        PenerbanganModel::create([
-            'nama_maskapai' => $r->maskapai,
+        Penerbangan::create([
+            'maskapai_id' => $r->maskapai_id,
             'harga' => $r->harga,
             'id_bandara_asal' => $r->asal_id,
             'id_bandara_tujuan' => $r->tujuan_id,
             'tanggal' => $r->tanggal,
             'jam_berangkat' => $r->jam_berangkat,
             'jam_tiba' => $r->jam_tiba,
-            'gambar' => '/images/plane1.png'
         ]);
 
-        return redirect()->back()->with('success', 'Data penerbangan berhasil ditambahkan!');
+        return redirect()->route('travels.index')->with('success', 'Data penerbangan berhasil ditambahkan!');
     }
-    
+
 }

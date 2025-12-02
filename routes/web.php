@@ -6,6 +6,7 @@ use App\Http\Controllers\GoogleOAuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TravelsController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\TiketController;
 
 Route::get('/', function () {
     return view('homepage');
@@ -43,10 +44,16 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     
     // travels
-    Route::get('/travels', [TravelsController::class, 'index']);
-    Route::get('/create/flights', [TravelsController::class, 'create']);
-    Route::post('/travels', [TravelsController::class, 'store'])->name('travel.store');
+    Route::get('/travels', [TravelsController::class, 'index'])->name('travels.index');
+    Route::get('/create/flights', [TravelsController::class, 'create'])->name('travels.create');
+    Route::post('/travels/store', [TravelsController::class, 'store'])->name('travels.store');
 
+    //tiket
+    Route::get('/tiket/pesan/{id}', [TiketController::class, 'create'])->name('tiket.create');
+    Route::post('/tiket/pesan', [TiketController::class, 'store'])->name('tiket.store');
+    Route::get('/tiket/sukses', function(){
+        return view('travels.index');
+    })->name('user.tiket.sukses');
 
     // bookings
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');

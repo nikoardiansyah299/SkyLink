@@ -21,7 +21,8 @@
         <div class="card shadow-sm">
           <div class="card-body">
             <h5 class="card-title">Cari Penerbangan</h5>
-            <form class="row g-2" action="#" method="post">
+            <form class="row g-2" action="{{ route('travels.store') }}" method="post">
+              @csrf
               <div class="col-12">
                 <input type="text" name="destination" class="form-control" placeholder="Destinasi" required>
                 <div class="small text-muted mt-1">Tanggal berangkat</div>
@@ -73,10 +74,24 @@
 
     <!-- FILTER TAB -->
     <div class="d-flex gap-2 mb-4 border-bottom pb-2">
-        <button class="btn btn-light border rounded-pill px-4 active">Sekali Jalan</button>
-        <button class="btn btn-light border rounded-pill px-4">Domestik</button>
-        <button class="btn btn-light border rounded-pill px-4">Internasional</button>
-    </div>
+
+    <a href="{{ route('travels.index') }}"
+        class="btn btn-light border rounded-pill px-4 {{ $kategori === null ? 'active' : '' }}">
+        Sekali Jalan
+    </a>
+
+    <a href="{{ route('travels.index', ['kategori' => 'domestik']) }}"
+        class="btn btn-light border rounded-pill px-4 {{ $kategori === 'domestik' ? 'active' : '' }}">
+        Domestik
+    </a>
+
+    <a href="{{ route('travels.index', ['kategori' => 'internasional']) }}"
+        class="btn btn-light border rounded-pill px-4 {{ $kategori === 'internasional' ? 'active' : '' }}">
+        Internasional
+    </a>
+
+</div>
+
 
     <!-- JIKA ADMIN → TOMBOL TAMBAH -->
     @if(Auth::check() && Auth::user()->roles === 'admin')
@@ -101,34 +116,47 @@
               align-items: center;
           ">
 
-              <div>
-                  <div style="font-size: 18px; font-weight: 600;">
-                      {{ $f->nama_maskapai }}
-                  </div>
+              <!-- LOGO MASKAPAI -->
+              <div style="display:flex; align-items:center; gap:15px;">
+                  <img src="{{ asset(ltrim($f->maskapai->logo, '/')) }}"
+                    alt="logo"
+                    style="width:55px; height:auto; border-radius:8px;">
 
-                  <div style="margin-top: 4px; font-size: 17px; font-weight: bold;">
-                      {{ $f->asal->kota }} ({{ $f->asal->kode_iata }})
-                      ↔
-                      {{ $f->tujuan->kota }} ({{ $f->tujuan->kode_iata }})
-                  </div>
+                  <div>
+                      <div style="font-size: 18px; font-weight: 600;">
+                          {{ $f->maskapai->nama_maskapai }}
+                      </div>
 
-                  <div style="margin-top: 4px; color: #555;">
-                      {{ \Carbon\Carbon::createFromFormat('Y-m-d', $f->tanggal)->locale('id')->isoFormat('dddd, D MMM YYYY') }}
+                      <div style="margin-top: 4px; font-size: 17px; font-weight: bold;">
+                          {{ $f->bandaraAsal->kota }} ({{ $f->bandaraAsal->kode_iata }})
+                          ↔
+                          {{ $f->bandaraTujuan->kota }} ({{ $f->bandaraTujuan->kode_iata }})
+                      </div>
+
+                      <div style="margin-top: 4px; color: #555;">
+                          {{ \Carbon\Carbon::parse($f->tanggal)->locale('id')->isoFormat('dddd, D MMM YYYY') }}
+                      </div>
                   </div>
               </div>
 
               <div style="text-align: right;">
-                  <div style="font-size: 20px; font-weight: bold; color: #0066FF;">
-                      Rp {{ number_format($f->harga, 0, ',', '.') }}
-                  </div>
+                <div style="font-size: 20px; font-weight: bold; color: #0066FF;">
+                    Rp {{ number_format($f->harga, 0, ',', '.') }}
+                </div>
 
-                  <div style="color: #888; font-size: 14px;">
-                      Sekali Jalan
-                  </div>
+                <div style="color: #888; font-size: 14px;">
+                    Sekali Jalan
+                </div>
+
+                <a href="{{ route('tiket.create', $f->id) }}" class="btn btn-primary mt-2 w-100">
+                    Pesan Tiket
+                </a>
               </div>
+
 
           </div>
         @endforeach
+
 
     </div>
 

@@ -9,8 +9,7 @@ class Penerbangan extends Model
     protected $table = 'penerbangan';
 
     protected $fillable = [
-        'nama_maskapai',
-        'gambar',
+        'maskapai_id',
         'harga',
         'id_bandara_asal',
         'id_bandara_tujuan',
@@ -32,5 +31,10 @@ class Penerbangan extends Model
     public function pemesanan()
     {
         return $this->hasMany(Pemesanan::class, 'id_penerbangan');
+    }
+
+    public function maskapai()
+    {
+        return $this->belongsTo(Maskapai::class, 'maskapai_id');
     }
 }

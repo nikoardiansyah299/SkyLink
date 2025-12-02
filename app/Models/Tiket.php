@@ -11,6 +11,7 @@ class Tiket extends Model
     protected $fillable = [
         'nama_penumpang',
         'nik',
+        'kelas',
         'id_pemesanan',
         'id_penerbangan',
         'seat',

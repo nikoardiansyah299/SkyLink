@@ -10,16 +10,18 @@
     <div class="p-4 rounded-4 shadow-sm bg-white">
         <h3 class="mb-4 fw-bold">Tambah Data Travel</h3>
 
-        <form action="{{ route('travel.store') }}" method="POST">
+        <form action="{{ route('travels.store') }}" method="POST">
             @csrf
-
-            {{-- Gambar Default --}}
-            <input type="hidden" name="gambar" value="/images/plane1.png">
 
             {{-- Maskapai --}}
             <div class="mb-3">
                 <label class="form-label fw-semibold">Maskapai</label>
-                <input type="text" name="maskapai" class="form-control rounded-3" placeholder="Masukkan nama maskapai" required>
+                <select name="maskapai_id" class="form-select rounded-3" required>
+                    <option value="">-- Pilih Maskapai --</option>
+                    @foreach ($maskapai as $m)
+                        <option value="{{ $m->id }}">{{ $m->nama_maskapai }}</option>
+                    @endforeach
+                </select>
             </div>
 
             {{-- Harga --}}

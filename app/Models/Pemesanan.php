@@ -13,13 +13,12 @@ class Pemesanan extends Model
         'id_penerbangan',
         'kode',
         'jumlah_tiket',
-        'tipe_kelas',
+        'total',
         'status',
     ];
 
     protected $casts = [
         'status' => 'string',
-        'tipe_kelas' => 'string',
     ];
 
     public function user()
