@@ -112,7 +112,8 @@ class TiketController extends Controller
             Tiket::create($ticketData);
         }
 
-        return redirect()->route('user.tiket.sukses')
+        // After booking, redirect back to the travels listing page
+        return redirect()->route('travels.index')
                          ->with('success', 'Tiket berhasil dipesan!');
     }
 }
