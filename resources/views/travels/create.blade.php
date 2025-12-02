@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mt-5" style="max-width: 650px;">
 
-    <a href="/" class="text-decoration-none mb-3 d-inline-block">
+    <a href="{{ route('home') }}" class="text-decoration-none mb-3 d-inline-block">
         ← Kembali
     </a>
 

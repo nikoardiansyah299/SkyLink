@@ -98,7 +98,7 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
       <div class="container">
-          <a class="navbar-brand fw-bold text-light" href="/">🌍 SkyLink</a>
+          <a class="navbar-brand fw-bold text-light" href="{{ route('home') }}">🌍 SkyLink</a>
 
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
               <span class="navbar-toggler-icon"></span>
@@ -108,9 +108,9 @@
               <ul class="navbar-nav ms-auto">
 
                   @if(Auth::check())
-                      <li class="nav-item"><a class="nav-link text-light" href="/">Dashboard</a></li>
-                      <li class="nav-item"><a class="nav-link text-light" href="/travels">Travels</a></li>
-                      <li class="nav-item"><a class="nav-link text-light" href="/bookings">My Bookings</a></li>
+                      <li class="nav-item"><a class="nav-link text-light" href="{{ route('home') }}">Dashboard</a></li>
+                      <li class="nav-item"><a class="nav-link text-light" href="{{ route('travels.index') }}">Travels</a></li>
+                      <li class="nav-item"><a class="nav-link text-light" href="{{ route('bookings.index') }}">My Bookings</a></li>
 
                       @if(Auth::user()->is_admin)
                           <li class="nav-item"><a class="nav-link text-light" href="{{ route('travels.create') }}">Manage Travels</a></li>
@@ -122,7 +122,7 @@
                           </a>
 
                           <ul class="dropdown-menu dropdown-menu-end">
-                              <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                              <li><a class="dropdown-item" href="{{ route('profile') }}">Profile</a></li>
                               <li><hr class="dropdown-divider"></li>
                               <li>
                                   <form method="POST" action="{{ route('logout') }}">
@@ -140,8 +140,8 @@
                           </a>
 
                           <ul class="dropdown-menu dropdown-menu-end">
-                              <li><a class="dropdown-item" href={{ route("login") }}>Login</a></li>
-                              <li><a class="dropdown-item" href={{ route("register") }}>Register</a></li>
+                              <li><a class="dropdown-item" href="{{ route('login') }}">Login</a></li>
+                              <li><a class="dropdown-item" href="{{ route('register') }}">Register</a></li>
                           </ul>
                       </li>
                   @endif
@@ -195,18 +195,18 @@
               <div class="col-md-3 mb-3 text-center">
                   <h6 class="fw-bold">Discover</h6>
                   <ul class="list-unstyled small">
-                      <li><a href="/" class="text-light text-decoration-none">Home</a></li>
-                      <li><a href="/booking" class="text-light text-decoration-none">My Booking</a></li>
-                      <li><a href="/travel" class="text-light text-decoration-none">Destination</a></li>
+                      <li><a href="{{ route('home') }}" class="text-light text-decoration-none">Home</a></li>
+                      <li><a href="{{ route('bookings.index') }}" class="text-light text-decoration-none">My Booking</a></li>
+                      <li><a href="{{ route('travels.index') }}" class="text-light text-decoration-none">Destination</a></li>
                   </ul>
               </div>
 
               <div class="col-md-3 mb-3 text-center">
                   <h6 class="fw-bold">Quick Links</h6>
                   <ul class="list-unstyled small">
-                      <li><a href="{{ route("login") }}" class="text-light text-decoration-none">Login</a></li>
-                      <li><a href="{{ route("register") }}" class="text-light text-decoration-none">Register</a></li>
-                      <li><a href="/travels" class="text-light text-decoration-none">Available Travels</a></li>
+                      <li><a href="{{ route('login') }}" class="text-light text-decoration-none">Login</a></li>
+                      <li><a href="{{ route('register') }}" class="text-light text-decoration-none">Register</a></li>
+                      <li><a href="{{ route('travels.index') }}" class="text-light text-decoration-none">Available Travels</a></li>
                   </ul>
               </div>
 
