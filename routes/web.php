@@ -62,10 +62,10 @@ Route::middleware('auth')->group(function () {
     })->name('user.tiket.sukses');
 
     // bookings
-    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
-    Route::get('/bookings/{id}', [BookingController::class, 'show'])->name('bookings.show');
-    Route::get('/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
-    Route::post('/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel.post');
+    Route::get('/public/bookings', [BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/public/bookings/{id}', [BookingController::class, 'show'])->name('bookings.show');
+    Route::get('/public/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+    Route::post('/public/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel.post');
     Route::get('/bookings/{id}/modify', [BookingController::class, 'modify'])->name('bookings.modify');
     Route::get('/bookings/{id}/alternatives', [BookingController::class, 'getAlternativeFlights'])->name('bookings.alternatives');
     Route::post('/bookings/{id}/change-flight', [BookingController::class, 'changeToFlight'])->name('bookings.changeFlight');
