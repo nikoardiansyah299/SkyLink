@@ -47,7 +47,10 @@ class TiketController extends Controller
         $rules = [
             'id_penerbangan'       => 'required|exists:penerbangan,id',
             'nama_penumpang.*'     => 'required|string',
-            'nik.*'                => 'required|string',
+            // NIK is an Indonesian national ID (16 digits). Validate as a 16-character string
+            // to allow leading zeros and preserve formatting. We validate length here,
+            // and store as string in the DB after running the migration.
+            'nik.*'                => 'required|string|size:16',
             'seat.*'               => 'required|string',
         ];
 
