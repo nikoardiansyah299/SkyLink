@@ -98,7 +98,7 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
       <div class="container">
-          <a class="navbar-brand fw-bold text-light" href="/">🌍 SkyLink</a>
+          <a class="navbar-brand fw-bold text-light" href="{{ url("/home") }}">🌍 SkyLink</a>
 
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
               <span class="navbar-toggler-icon"></span>
@@ -125,7 +125,7 @@
                               <li><a class="dropdown-item" href="{{ url("/profile") }}">Profile</a></li>
                               <li><hr class="dropdown-divider"></li>
                               <li>
-                                  <form method="POST" action="{{ route('logout') }}">
+                                  <form method="POST" action="{{ url("/logout") }}">
                                       @csrf
                                       <button class="dropdown-item">Logout</button>
                                   </form>
@@ -195,25 +195,25 @@
               <div class="col-md-3 mb-3 text-center">
                   <h6 class="fw-bold">Discover</h6>
                   <ul class="list-unstyled small">
-                      <li><a href="/" class="text-light text-decoration-none">Home</a></li>
-                      <li><a href="/booking" class="text-light text-decoration-none">My Booking</a></li>
-                      <li><a href="/travel" class="text-light text-decoration-none">Destination</a></li>
+                      <li><a href="{{ url("/home") }}" class="text-light text-decoration-none">Home</a></li>
+                      <li><a href="{{ url("/bookings") }}" class="text-light text-decoration-none">My Booking</a></li>
+                      <li><a href="{{ url("/travels") }}" class="text-light text-decoration-none">Destination</a></li>
                   </ul>
               </div>
 
               <div class="col-md-3 mb-3 text-center">
                   <h6 class="fw-bold">Quick Links</h6>
                   <ul class="list-unstyled small">
-                      <li><a href="/public/register" class="text-light text-decoration-none">Login</a></li>
-                      <li><a href="/public/register class="text-light text-decoration-none">Register</a></li>
-                      <li><a href="/public/travels" class="text-light text-decoration-none">Available Travels</a></li>
+                      <li><a href="{{ url("/login") }}" class="text-light text-decoration-none">Login</a></li>
+                      <li><a href="{{ url("/register") }}" class="text-light text-decoration-none">Register</a></li>
+                      <li><a href="{{ url("/travels") }}" class="text-light text-decoration-none">Available Travels</a></li>
                   </ul>
               </div>
 
               <div class="col-md-3 mb-3 text-center">
                   <h6 class="fw-bold">Contact</h6>
-                  <p class="small mb-1">Address : Lorem</p>
-                  <p class="small mb-1">Email : xyz@mail.com</p>
+                  <p class="small mb-1">Address : Indonesia, Jawa Timur, Malang</p>
+                  <p class="small mb-1">Email : niko.ardiansyah.2405336@students.um.ac.id</p>
                   <p class="small mb-0">Phone : 00022200222</p>
               </div>
           </div>
