@@ -170,7 +170,7 @@
                                         const container = document.getElementById('altFlightsContainer{{ $booking['id'] }}');
                                         if (container.dataset.loaded) return;
                                         
-                                        fetch(`/bookings/{{ $booking['id'] }}/alternatives`)
+                                        fetch(`/skylink/public/bookings/{{ $booking['id'] }}/alternatives`)
                                             .then(r => r.json())
                                             .then(flights => {
                                                 if (!flights || flights.length === 0) {
@@ -180,7 +180,7 @@
                                                 let html = '';
                                                 flights.forEach(f => {
                                                     html += `
-                                                        <form action="/bookings/{{ $booking['id'] }}/change-flight" method="POST" style="display:inline;">
+                                                        <form action="/skylink/public/bookings/{{ $booking['id'] }}/change-flight" method="POST" style="display:inline;">
                                                             @csrf
                                                             <input type="hidden" name="flight_id" value="${f.id}">
                                                             <button type="submit" class="dropdown-item" style="text-align: left;">
@@ -211,7 +211,7 @@
                                     <li><span class="dropdown-item-text small">Hapus pemesanan ini?</span></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form action="/bookings/{{ $booking['id'] }}/delete" method="POST" class="w-100">
+                                        <form action="/skylink/public/bookings/{{ $booking['id'] }}/delete" method="POST" class="w-100">
                                             @csrf
                                             <button type="submit" class="dropdown-item text-danger">Ya, Hapus</button>
                                         </form>
