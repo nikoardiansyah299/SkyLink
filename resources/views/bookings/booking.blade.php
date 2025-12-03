@@ -142,7 +142,7 @@
                                     <li><span class="dropdown-item-text small">Batalkan pemesanan ini?</span></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form action="/bookings/{{ $booking['id'] }}/cancel" method="POST" class="w-100">
+                                        <form action="/bookings/{{ url('/bookings') }}/cancel" method="POST" class="w-100">  
                                             @csrf
                                             <button type="submit" class="dropdown-item text-danger">Ya, Batalkan</button>
                                         </form>
