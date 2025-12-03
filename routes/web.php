@@ -10,7 +10,7 @@ use App\Http\Controllers\TiketController;
 
 Route::get('/home', function () {
     return view('homepage');
-});
+})->name('home');
 Route::get('/profile', function () {
     return view('profile');
 }); 

@@ -35,7 +35,7 @@ class AuthController extends Controller
 
         Auth::login($user, $request->boolean('remember'));
 
-        return redirect('/')->with('success', 'Login berhasil. Selamat datang!');
+        return redirect('/home')->with('success', 'Login berhasil. Selamat datang!');
     }
 
     /**
@@ -48,7 +48,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('success', 'Anda telah logout.');
+        return redirect('/home')->with('success', 'Anda telah logout.');
     }
 
     /**
