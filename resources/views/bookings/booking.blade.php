@@ -123,7 +123,7 @@
 
                     @if(Auth::check() && Auth::user()->roles === 'admin')
                         <!-- Admin: status change form -->
-                        <form action="/bookings/{{ $booking['id'] }}/status" method="POST" class="d-flex ms-2">
+                        <form action="/skylink/public/bookings/{{ $booking['id'] }}/status" method="POST" class="d-flex ms-2">
                             @csrf
                             <select name="status" class="form-select form-select-sm me-2" style="min-width:130px;">
                                 <option value="pending" {{ $booking['status'] === 'pending' ? 'selected' : '' }}>Menunggu</option>
@@ -142,7 +142,7 @@
                                     <li><span class="dropdown-item-text small">Batalkan pemesanan ini?</span></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form action="/public/bookings/{{ $booking['id'] }}/cancel" method="POST" class="w-100">
+                                        <form action="/skylink/public/bookings/{{ $booking['id'] }}/cancel" method="POST" class="w-100">
                                             @csrf
                                             <button type="submit" class="dropdown-item text-danger">Ya, Batalkan</button>
                                         </form>
