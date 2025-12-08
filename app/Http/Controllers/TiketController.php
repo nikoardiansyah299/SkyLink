@@ -94,10 +94,15 @@ class TiketController extends Controller
             'kode'            => $this->generateUniqueCode(),
             'jumlah_tiket'    => $jumlahTiket,
             // Persist the selected class for the entire booking. Use the first
-            // passenger's class as the booking class.
-            'tipe_kelas'      => $r->kelas[0] ?? 'ekonomi',
+            // passenger's class as the booking class — but only include the
+            // column if the schema actually contains `tipe_kelas` to remain
+            // compatible with databases that don't have that column.
             'status'          => 'Pending',
         ];
+
+        if (Schema::hasColumn('pemesanan', 'tipe_kelas')) {
+            $pemesananData['tipe_kelas'] = $r->kelas[0] ?? 'ekonomi';
+        }
 
         try {
             DB::transaction(function() use ($r, $flight, $pemesananData) {
@@ -129,7 +134,10 @@ class TiketController extends Controller
                 'request' => $r->all(),
             ]);
 
-            return back()->withInput()->with('error', 'Terjadi kesalahan saat memproses pemesanan. Silakan coba lagi.');
+            // If app debug is enabled show exception message to help debugging.
+            $message = config('app.debug') ? $e->getMessage() : 'Terjadi kesalahan saat memproses pemesanan. Silakan coba lagi.';
+
+            return back()->withInput()->with('error', $message);
         }
     }
 }
