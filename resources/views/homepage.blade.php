@@ -15,7 +15,7 @@
         <p class="lead">Temukan destinasi memukau dan ciptakan kenangan tak terlupakan melalui layanan kami.</p>
         <p>
           <a href="{{ url('/travels') }}" class="btn btn-light btn-lg me-2">Mulai Jelajah</a>
-          <a href="{{ url('/booking') }}" class="btn btn-outline-light btn-lg">Lihat Booking</a>
+          <a href="{{ url('/bookings') }}" class="btn btn-outline-light btn-lg">Lihat Booking</a>
         </p>
       </div>
       <div class="col-lg-6 mt-4 mt-lg-0">
