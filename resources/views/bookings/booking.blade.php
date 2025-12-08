@@ -52,7 +52,13 @@
                 <!-- HEADER: Airline & Status -->
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div class="d-flex align-items-center gap-2">
-                        <img src="{{ $booking['airline_logo'] }}" width="50" alt="{{ $booking['airline'] }}">
+                        @php
+                            $logo = $booking['airline_logo'] ?? 'images/default-logo.png';
+                            $logoUrl = \Illuminate\Support\Str::startsWith($logo, ['http://', 'https://'])
+                                ? $logo
+                                : asset(ltrim($logo, '/'));
+                        @endphp
+                        <img src="{{ $logoUrl }}" width="50" alt="{{ $booking['airline'] }}">
                         <div>
                             <div class="fw-semibold">{{ $booking['airline'] }}</div>
                             <div class="small text-muted">Flight {{ $booking['flight_number'] }}</div>
