@@ -14,6 +14,7 @@ class Pemesanan extends Model
         'kode',
         'jumlah_tiket',
         'total',
+        'tipe_kelas',
         'status',
     ];
 

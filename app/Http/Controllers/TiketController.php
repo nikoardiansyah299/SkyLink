@@ -51,6 +51,9 @@ class TiketController extends Controller
             // to allow leading zeros and preserve formatting. We validate length here,
             // and store as string in the DB after running the migration.
             'nik.*'                => 'required|string|size:16',
+            // The booking (pemesanan) requires a class selection. Always validate kelas
+            // so we can persist `tipe_kelas` on the pemesanan record (DB requires it).
+            'kelas.*'              => 'required|string',
             'seat.*'               => 'required|string',
         ];
 
@@ -88,6 +91,9 @@ class TiketController extends Controller
             'id_penerbangan'  => $flight->id,
             'kode'            => $this->generateUniqueCode(),
             'jumlah_tiket'    => $jumlahTiket,
+            // Persist the selected class for the entire booking. Use the first
+            // passenger's class as the booking class.
+            'tipe_kelas'      => $r->kelas[0] ?? 'ekonomi',
             'status'          => 'Pending',
         ];
 
