@@ -9,6 +9,8 @@ use App\Models\Pemesanan;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TiketController extends Controller
 {
@@ -97,32 +99,37 @@ class TiketController extends Controller
             'status'          => 'Pending',
         ];
 
-        $pemesanan = Pemesanan::create($pemesananData);
+        try {
+            DB::transaction(function() use ($r, $flight, $pemesananData) {
+                $pemesanan = Pemesanan::create($pemesananData);
 
-        // === Simpan tiket per penumpang ===
-        for ($i = 0; $i < count($r->nama_penumpang); $i++) {
-            // Some installations may not have a `kelas` column on `tiket`.
-            // To avoid SQL errors without changing the schema, do not
-            // include `kelas` in the insert. The booking form still
-            // collects a class selection for UX, but we won't persist it
-            // unless the DB schema includes the column.
-            $ticketData = [
-                'nama_penumpang'  => $r->nama_penumpang[$i],
-                'nik'             => $r->nik[$i],
-                'id_pemesanan'    => $pemesanan->id,
-                'id_penerbangan'  => $flight->id,
-                'seat'            => $r->seat[$i],
-            ];
+                // === Simpan tiket per penumpang ===
+                for ($i = 0; $i < count($r->nama_penumpang); $i++) {
+                    $ticketData = [
+                        'nama_penumpang'  => $r->nama_penumpang[$i],
+                        'nik'             => $r->nik[$i],
+                        'id_pemesanan'    => $pemesanan->id,
+                        'id_penerbangan'  => $flight->id,
+                        'seat'            => $r->seat[$i],
+                    ];
 
-            if (Schema::hasColumn('tiket', 'kelas')) {
-                $ticketData['kelas'] = $r->kelas[$i] ?? null;
-            }
+                    if (Schema::hasColumn('tiket', 'kelas')) {
+                        $ticketData['kelas'] = $r->kelas[$i] ?? null;
+                    }
 
-            Tiket::create($ticketData);
+                    Tiket::create($ticketData);
+                }
+            });
+
+            return redirect()->route('travels.index')
+                             ->with('success', 'Tiket berhasil dipesan!');
+        } catch (\Exception $e) {
+            Log::error('Ticket booking failed: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request' => $r->all(),
+            ]);
+
+            return back()->withInput()->with('error', 'Terjadi kesalahan saat memproses pemesanan. Silakan coba lagi.');
         }
-
-        // After booking, redirect back to the travels listing page
-        return redirect()->route('travels.index')
-                         ->with('success', 'Tiket berhasil dipesan!');
     }
 }
