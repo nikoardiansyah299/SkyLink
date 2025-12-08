@@ -94,15 +94,10 @@ class TiketController extends Controller
             'kode'            => $this->generateUniqueCode(),
             'jumlah_tiket'    => $jumlahTiket,
             // Persist the selected class for the entire booking. Use the first
-            // passenger's class as the booking class — but only include the
-            // column if the schema actually contains `tipe_kelas` to remain
-            // compatible with databases that don't have that column.
+            // passenger's class as the booking class.
+            'tipe_kelas'      => $r->kelas[0] ?? 'ekonomi',
             'status'          => 'Pending',
         ];
-
-        if (Schema::hasColumn('pemesanan', 'tipe_kelas')) {
-            $pemesananData['tipe_kelas'] = $r->kelas[0] ?? 'ekonomi';
-        }
 
         try {
             DB::transaction(function() use ($r, $flight, $pemesananData) {
