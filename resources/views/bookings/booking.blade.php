@@ -98,7 +98,10 @@
                     </div>
                     <div class="col-6">
                         <div class="small text-muted">Kursi</div>
-                        <div class="fw-bold">{{ $booking['seats'] }}</div>
+                        <div class="fw-bold d-flex align-items-center gap-2">
+                            <span class="badge bg-light text-dark text-capitalize" style="font-size:0.8rem;">{{ $booking['tipe_kelas'] ?? 'ekonomi' }}</span>
+                            <span>{{ $booking['seats'] }}</span>
+                        </div>
                     </div>
                 </div>
 
