@@ -98,9 +98,9 @@
                     </div>
                     <div class="col-6">
                         <div class="small text-muted">Kursi</div>
-                        <div class="fw-bold d-flex align-items-center gap-2">
-                            <span class="badge bg-light text-dark text-capitalize" style="font-size:0.8rem;">{{ $booking['tipe_kelas'] ?? 'ekonomi' }}</span>
-                            <span>{{ $booking['seats'] }}</span>
+                        <div class="fw-bold d-flex align-items-center justify-content-center gap-2">
+                            <span class="seat-badge text-capitalize">{{ $booking['tipe_kelas'] ?? 'ekonomi' }}</span>
+                            <span class="seat-number">{{ $booking['seats'] }}</span>
                         </div>
                     </div>
                 </div>
@@ -283,6 +283,33 @@
             flex-direction: column;
             gap: 1rem;
         }
+    }
+</style>
+
+<style>
+    /* Seat class badge styling */
+    .seat-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 28px;
+        min-width: 72px;
+        padding: 0 .6rem;
+        border-radius: 14px;
+        background: #f1f5f9;
+        color: #0d6efd;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: capitalize;
+        border: 1px solid #e6eef9;
+    }
+
+    .seat-number {
+        font-size: 1rem;
+    }
+
+    @media (max-width: 767px) {
+        .seat-badge { min-width: 56px; height: 24px; font-size: 0.78rem; }
     }
 </style>
 
