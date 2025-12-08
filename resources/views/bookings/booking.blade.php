@@ -90,16 +90,25 @@
 
                 <hr>
 
-                <!-- PASSENGERS & SEATS -->
+                <!-- PASSENGERS, TIPE KURSI, & SEATS -->
                 <div class="row g-2 mb-3 text-center">
-                    <div class="col-6">
+                    <div class="col-12 col-md-4">
                         <div class="small text-muted">Penumpang</div>
                         <div class="fw-bold">{{ $booking['passengers'] }}</div>
                     </div>
-                    <div class="col-6">
+
+                    <div class="col-12 col-md-4">
+                        <div class="small text-muted">Tipe Kursi</div>
+                        <div class="fw-bold d-flex justify-content-center">
+                            <div class="d-inline-block">
+                                <span class="seat-badge text-capitalize">{{ $booking['tipe_kelas'] ?? 'ekonomi' }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-4">
                         <div class="small text-muted">Kursi</div>
-                        <div class="fw-bold d-flex align-items-center justify-content-center gap-2">
-                            <span class="seat-badge text-capitalize">{{ $booking['tipe_kelas'] ?? 'ekonomi' }}</span>
+                        <div class="fw-bold d-flex justify-content-center">
                             <span class="seat-number">{{ $booking['seats'] }}</span>
                         </div>
                     </div>
